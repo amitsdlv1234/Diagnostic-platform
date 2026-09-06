@@ -14,7 +14,6 @@ export function CartSummary() {
   const {
     items,
     totalMrp,
-    subtotal,
     discount,
     total,
   } = useCart();

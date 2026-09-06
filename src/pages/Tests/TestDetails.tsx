@@ -19,7 +19,6 @@ import { diagnosticTests } from "../../features/tests/testData";
 import { calculateDiscount } from "../../features/tests/testUtils";
 
 import { useCart } from "../../features/cart/cartStore";
-import type { CartItem } from "../../features/cart/cartTypes";
 
 export function TestDetails() {
   const { testId } = useParams<{
@@ -29,7 +28,7 @@ export function TestDetails() {
   const {
     addItem, isInCart } = useCart();
 
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [addedToCart] = useState(false);
 
   const test = diagnosticTests.find(
     (item) => item.id === testId,
@@ -67,25 +66,25 @@ export function TestDetails() {
     "TEST",
   );
 
-  const handleAddToCart = () => {
-    if (alreadyInCart) {
-      return;
-    }
+  // const handleAddToCart = () => {
+  //   if (alreadyInCart) {
+  //     return;
+  //   }
 
-    const cartItem: CartItem = {
-      id: test.id,
-      type: "TEST",
-      name: test.name,
-      slug: test.slug,
-      price: test.price,
-      mrp: test.mrp,
-      quantity: 1,
-      shortDescription: test.shortDescription,
-    };
+  //   const cartItem: CartItem = {
+  //     id: test.id,
+  //     type: "TEST",
+  //     name: test.name,
+  //     slug: test.slug,
+  //     price: test.price,
+  //     mrp: test.mrp,
+  //     quantity: 1,
+  //     shortDescription: test.shortDescription,
+  //   };
 
-    addItem(cartItem);
-    setAddedToCart(true);
-  };
+  //   addItem(cartItem);
+  //   setAddedToCart(true);
+  // };
 
   return (
     <div className="bg-gray-50">

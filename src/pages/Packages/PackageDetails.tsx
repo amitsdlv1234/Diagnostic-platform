@@ -27,7 +27,6 @@ import { calculatePackageDiscount } from "../../features/packages/packageUtils";
 
 import { useCart } from "../../features/cart/cartStore";
 
-import type { CartItem } from "../../features/cart/cartTypes";
 
 export function PackageDetails() {
   const { packageId } =
@@ -37,7 +36,7 @@ export function PackageDetails() {
 
   const { addItem, isInCart } = useCart();
 
-  const [addedToCart, setAddedToCart] =
+  const [addedToCart] =
     useState(false);
 
   const packageData =
@@ -78,26 +77,26 @@ export function PackageDetails() {
     "PACKAGE",
   );
 
-  const handleAddToCart = () => {
-    if (alreadyInCart || addedToCart) {
-      return;
-    }
+  // const handleAddToCart = () => {
+  //   if (alreadyInCart || addedToCart) {
+  //     return;
+  //   }
 
-    const cartItem: CartItem = {
-      id: packageData.id,
-      type: "PACKAGE",
-      name: packageData.name,
-      price: packageData.price,
-      mrp: packageData.mrp,
-      quantity: 1,
-      shortDescription:
-        packageData.shortDescription,
-    };
+  //   const cartItem: CartItem = {
+  //     id: packageData.id,
+  //     type: "PACKAGE",
+  //     name: packageData.name,
+  //     price: packageData.price,
+  //     mrp: packageData.mrp,
+  //     quantity: 1,
+  //     shortDescription:
+  //       packageData.shortDescription,
+  //   };
 
-    addItem(cartItem);
+  //   addItem(cartItem);
 
-    setAddedToCart(true);
-  };
+  //   setAddedToCart(true);
+  // };
 
   return (
     <div className="bg-gray-50">
