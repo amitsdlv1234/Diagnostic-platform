@@ -44,14 +44,10 @@ export interface BookingSchedule {
 
 export interface BookingFormState {
   patient: BookingPatient;
-
   collectionType: CollectionType;
-
   centreId: string;
   centreName: string;
-
   address: BookingAddress;
-
   schedule: BookingSchedule;
 }
 
@@ -88,4 +84,16 @@ export interface Booking {
     | "FAILED";
 
   createdAt: string;
+
+  /**
+   * Last modification time.
+   *
+   * Used for reschedule/cancellation updates.
+   */
+  updatedAt?: string;
+
+  /**
+   * Cancellation information.
+   */
+  cancelledAt?: string;
 }

@@ -33,6 +33,8 @@ import { Cart } from "../pages/Cart/Cart";
 import { Booking } from "../pages/Booking/Booking";
 import { BookingConfirmation } from "../pages/Booking/BookingConfirmation";
 import { BookingDetails } from "../pages/Patient/BookingDetails";
+import { ReportDetails } from "../pages/Patient/ReportDetails";
+import { Payment } from "../pages/Booking/Payment";
 
 function PlaceholderPage({
   title,
@@ -131,6 +133,11 @@ export function AppRoutes() {
           */}
 
           <Route
+            path="/booking/payment"
+            element={<Payment />}
+          />
+
+          <Route
             path="/booking/confirmation/:bookingId"
             element={<BookingConfirmation />}
           />
@@ -221,6 +228,10 @@ export function AppRoutes() {
             <Route
               path="reports"
               element={<Reports />}
+            />
+            <Route
+              path="reports/:reportId"
+              element={<ReportDetails />}
             />
           </Route>
         </Route>

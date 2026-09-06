@@ -246,3 +246,37 @@ export function cancelBooking(
 
   return cancelledBooking;
 }
+
+/**
+ * Reschedule an existing booking.
+ *
+ * Only CONFIRMED bookings can be rescheduled.
+ */
+export function rescheduleBooking(
+  bookingId: string,
+  collectionDate: string,
+  timeSlot: string,
+): Booking | null {
+  const booking = getBooking(bookingId);
+
+  if (!booking) {
+    return null;
+  }
+
+  if (booking.status !== "CONFIRMED") {
+    return booking;
+  }
+
+  const updatedBooking: Booking = {
+    ...booking,
+    schedule: {
+      ...booking.schedule,
+      collectionDate,
+      timeSlot,
+    },
+  };
+
+  saveBooking(updatedBooking);
+
+  return updatedBooking;
+}

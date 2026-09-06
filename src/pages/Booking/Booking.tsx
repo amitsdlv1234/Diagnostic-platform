@@ -183,30 +183,28 @@ export function Booking() {
         const bookingId = generateBookingId();
 
         const booking = {
-            id: generateBookingInternalId(),
+            id: `booking_${Date.now()}`,
 
             bookingId,
 
-            items: items.map((item) => ({
-                id: item.id,
-                type: item.type,
-                name: item.name,
-                price: item.price,
-                mrp: item.mrp,
-                quantity: item.quantity,
-            })),
+            items,
 
             patient: form.patient,
 
-            collectionType: form.collectionType,
+            collectionType:
+                form.collectionType,
 
-            centreId: form.centreId || undefined,
+            centreId:
+                form.centreId,
 
-            centreName: form.centreName || undefined,
+            centreName:
+                form.centreName,
 
-            address: form.address,
+            address:
+                form.address,
 
-            schedule: form.schedule,
+            schedule:
+                form.schedule,
 
             subtotal: total,
 
@@ -216,30 +214,26 @@ export function Booking() {
 
             total,
 
-            status: "CONFIRMED" as const,
+            // Booking is not confirmed until payment succeeds
+            status: "PENDING" as const,
 
             paymentStatus: "PENDING" as const,
 
-            createdAt: new Date().toISOString(),
+            createdAt:
+                new Date().toISOString(),
         };
 
-        saveBooking(booking);
-
-        navigate(
-            `/booking/confirmation/${bookingId}`,
-            {
-                state: {
-                    bookingId,
-                    serviceDate:
-                        form.schedule.collectionDate,
-                    timeSlot:
-                        form.schedule.timeSlot,
-                    collectionType:
-                        form.collectionType,
-                    total,
-                },
-            },
+        localStorage.setItem(
+            `diagnostic-booking-${bookingId}`,
+            JSON.stringify(booking),
         );
+
+        navigate("/booking/payment", {
+            state: {
+                bookingId,
+                total,
+            },
+        });
     };
 
     /*
