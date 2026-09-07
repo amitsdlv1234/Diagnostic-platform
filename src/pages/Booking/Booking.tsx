@@ -22,9 +22,7 @@ import { useCart } from "../../features/cart/cartStore";
 import {
     createInitialBookingState,
     generateBookingId,
-    generateBookingInternalId,
     getTodayDate,
-    saveBooking,
 } from "../../features/booking/bookingUtils";
 
 import type {
