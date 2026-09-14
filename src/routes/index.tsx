@@ -35,6 +35,14 @@ import { BookingConfirmation } from "../pages/Booking/BookingConfirmation";
 import { BookingDetails } from "../pages/Patient/BookingDetails";
 import { ReportDetails } from "../pages/Patient/ReportDetails";
 import { Payment } from "../pages/Booking/Payment";
+import { AdminLayout } from "../pages/Admin/AdminLayout";
+import { AdminDashboard } from "../pages/Admin/AdminDashboard";
+import { AdminTests } from "../pages/Admin/AdminTests";
+import { AdminPackages } from "../pages/Admin/AdminPackages";
+import { AdminCentres } from "../pages/Admin/AdminCentres";
+import { AdminHome } from "../pages/Admin/AdminHome";
+import { AdminOffers } from "../pages/Admin/AdminOffers";
+import { AdminBookings } from "../pages/Admin/AdminBookings";
 
 function PlaceholderPage({
   title,
@@ -234,6 +242,49 @@ export function AppRoutes() {
               element={<ReportDetails />}
             />
           </Route>
+        </Route>
+    {/* =====================================================
+    ADMIN AREA
+    ===================================================== */}
+
+        <Route
+          path="/admin"
+          element={<AdminLayout />}
+        >
+          <Route
+            index
+            element={<AdminDashboard />}
+          />
+
+          <Route
+            path="tests"
+            element={<AdminTests />}
+          />
+
+          <Route
+            path="packages"
+            element={<AdminPackages />}
+          />
+
+          <Route
+            path="centres"
+            element={<AdminCentres />}
+          />
+
+          <Route
+            path="home"
+            element={<AdminHome />}
+          />
+
+          <Route
+            path="offers"
+            element={<AdminOffers />}
+          />
+
+          <Route
+            path="bookings"
+            element={<AdminBookings />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

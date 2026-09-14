@@ -44,3 +44,34 @@ button {
 a {
   text-decoration: none;
 }
+@keyframes heroSlideLeft {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes heroSlideRight {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-hero-slide-left {
+  animation: heroSlideLeft 650ms ease-out;
+}
+
+.animate-hero-slide-right {
+  animation: heroSlideRight 650ms ease-out;
+}
