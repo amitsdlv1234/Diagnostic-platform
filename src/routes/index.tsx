@@ -43,6 +43,7 @@ import { AdminCentres } from "../pages/Admin/AdminCentres";
 import { AdminHome } from "../pages/Admin/AdminHome";
 import { AdminOffers } from "../pages/Admin/AdminOffers";
 import { AdminBookings } from "../pages/Admin/AdminBookings";
+import { AdminTheme } from "../pages/Admin/AdminTheme";
 
 function PlaceholderPage({
   title,
@@ -243,7 +244,7 @@ export function AppRoutes() {
             />
           </Route>
         </Route>
-    {/* =====================================================
+        {/* =====================================================
     ADMIN AREA
     ===================================================== */}
 
@@ -284,6 +285,10 @@ export function AppRoutes() {
           <Route
             path="bookings"
             element={<AdminBookings />}
+          />
+          <Route
+            path="theme"
+            element={<AdminTheme />}
           />
         </Route>
       </Routes>

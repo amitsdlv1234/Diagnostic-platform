@@ -4,10 +4,25 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import { useRef } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { Link } from "react-router-dom";
 
 import { Container } from "../../../components/common/Container";
+
+import {
+  getPackagesContent,
+  PACKAGES_UPDATED_EVENT,
+  type PackagesContent,
+} from "../../../features/home/homeConfig";
+
+/* =========================================================
+   PACKAGE DATA
+   ========================================================= */
 
 interface LifestylePackage {
   id: string;
@@ -105,6 +120,10 @@ const lifestylePackages: LifestylePackage[] = [
   },
 ];
 
+/* =========================================================
+   PACKAGE ROW
+   ========================================================= */
+
 interface PackageRowProps {
   title: string;
   category: string;
@@ -116,7 +135,8 @@ function PackageRow({
   category,
   items,
 }: PackageRowProps) {
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const sliderRef =
+    useRef<HTMLDivElement>(null);
 
   const moveSlider = (
     direction: "left" | "right",
@@ -125,11 +145,14 @@ function PackageRow({
       return;
     }
 
+    const amount =
+      sliderRef.current.clientWidth * 0.85;
+
     sliderRef.current.scrollBy({
       left:
         direction === "right"
-          ? 310
-          : -310,
+          ? amount
+          : -amount,
       behavior: "smooth",
     });
   };
@@ -140,7 +163,10 @@ function PackageRow({
 
   return (
     <div className="mt-10">
-      {/* Row Header */}
+      {/* =================================================
+          ROW HEADER
+          ================================================= */}
+
       <div className="mb-4 flex items-center justify-between gap-4">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-700 sm:text-base">
           {title}
@@ -174,12 +200,18 @@ function PackageRow({
         </Link>
       </div>
 
-      {/* Slider */}
+      {/* =================================================
+          SLIDER
+          ================================================= */}
+
       <div className="relative">
         {/* Previous */}
+
         <button
           type="button"
-          onClick={() => moveSlider("left")}
+          onClick={() =>
+            moveSlider("left")
+          }
           aria-label={`Previous ${title}`}
           className="
             absolute
@@ -207,6 +239,7 @@ function PackageRow({
         </button>
 
         {/* Cards */}
+
         <div
           ref={sliderRef}
           className="
@@ -221,75 +254,83 @@ function PackageRow({
             [&::-webkit-scrollbar]:hidden
           "
         >
-          {items.map((item) => (
-            <Link
-              key={item.id}
-              to={`/packages?category=${encodeURIComponent(
-                item.category,
-              )}`}
-              className="
-                group
-                relative
-                min-w-[210px]
-                snap-start
-                overflow-hidden
-                rounded-xl
-                bg-gray-200
-                shadow-sm
-                transition-all
-                duration-300
-                hover:-translate-y-1
-                hover:shadow-xl
-                sm:min-w-[220px]
-                lg:min-w-0
-                lg:flex-1
-              "
-            >
-              {/* Image */}
-              <div className="relative aspect-square overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  loading="lazy"
-                  className="
-                    h-full
-                    w-full
-                    object-cover
-                    transition-transform
-                    duration-500
-                    group-hover:scale-105
-                  "
-                />
+          {items.map(
+            (item: LifestylePackage) => (
+              <Link
+                key={item.id}
+                to={`/packages?category=${encodeURIComponent(
+                  item.category,
+                )}`}
+                className="
+                  group
+                  relative
+                  min-w-[210px]
+                  snap-start
+                  overflow-hidden
+                  rounded-xl
+                  bg-gray-200
+                  shadow-sm
+                  transition-all
+                  duration-300
+                  hover:-translate-y-1
+                  hover:shadow-xl
+                  sm:min-w-[220px]
+                  lg:min-w-0
+                  lg:flex-1
+                "
+              >
+                {/* Image */}
 
-                {/* Soft overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
-
-                {/* Package name */}
-                <div className="absolute bottom-3 left-3 right-3">
-                  <div
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    loading="lazy"
                     className="
-                      rounded-full
-                      bg-white
-                      px-3
-                      py-1.5
-                      text-center
-                      shadow-md
+                      h-full
+                      w-full
+                      object-cover
+                      transition-transform
+                      duration-500
+                      group-hover:scale-105
                     "
-                  >
-                    <span className="text-xs font-semibold text-gray-800">
-                      {item.name}
-                    </span>
+                  />
+
+                  {/* Overlay */}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
+
+                  {/* Package Name */}
+
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <div
+                      className="
+                        rounded-full
+                        bg-white
+                        px-3
+                        py-1.5
+                        text-center
+                        shadow-md
+                      "
+                    >
+                      <span className="text-xs font-semibold text-gray-800">
+                        {item.name}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ),
+          )}
         </div>
 
         {/* Next */}
+
         <button
           type="button"
-          onClick={() => moveSlider("right")}
+          onClick={() =>
+            moveSlider("right")
+          }
           aria-label={`Next ${title}`}
           className="
             absolute
@@ -318,6 +359,7 @@ function PackageRow({
       </div>
 
       {/* Mobile */}
+
       <p className="mt-2 text-center text-[11px] text-gray-400 sm:hidden">
         Swipe to explore →
       </p>
@@ -325,25 +367,128 @@ function PackageRow({
   );
 }
 
+/* =========================================================
+   PACKAGES SECTION
+   ========================================================= */
+
 export function PackagesSection() {
-  const menPackages = lifestylePackages.filter(
-    (item) => item.category === "Men Health",
+  const [
+    content,
+    setContent,
+  ] = useState<PackagesContent>(() =>
+    getPackagesContent(),
   );
 
-  const womenPackages = lifestylePackages.filter(
-    (item) => item.category === "Women Health",
-  );
+  /* =======================================================
+     LOAD UPDATED ADMIN CONFIG
+     ======================================================= */
 
-  const otherPackages = lifestylePackages.filter(
-    (item) =>
-      item.category !== "Men Health" &&
-      item.category !== "Women Health",
-  );
+  useEffect(() => {
+    const handleUpdate = () => {
+      setContent(getPackagesContent());
+    };
+
+    window.addEventListener(
+      PACKAGES_UPDATED_EVENT,
+      handleUpdate,
+    );
+
+    return () => {
+      window.removeEventListener(
+        PACKAGES_UPDATED_EVENT,
+        handleUpdate,
+      );
+    };
+  }, []);
+
+  /* =======================================================
+     SUPPORT DIFFERENT BROWSER TABS
+     ======================================================= */
+
+  useEffect(() => {
+    const handleStorage = (
+      event: StorageEvent,
+    ) => {
+      if (
+        event.key ===
+        "diagnostic_packages_content"
+      ) {
+        setContent(
+          getPackagesContent(),
+        );
+      }
+    };
+
+    window.addEventListener(
+      "storage",
+      handleStorage,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        handleStorage,
+      );
+    };
+  }, []);
+
+  /* =======================================================
+     SECTION ENABLE / DISABLE
+     ======================================================= */
+
+  if (!content.enabled) {
+    return null;
+  }
+
+  /* =======================================================
+     GET ADMIN SELECTED PACKAGES
+     ======================================================= */
+
+  const configuredPackages =
+    content.packageIds
+      .map((packageId: string) =>
+        lifestylePackages.find(
+          (item: LifestylePackage) =>
+            item.id === packageId,
+        ),
+      )
+      .filter(
+        (
+          item: LifestylePackage | undefined,
+        ): item is LifestylePackage =>
+          Boolean(item),
+      );
+
+  /* =======================================================
+     GROUP SELECTED PACKAGES
+     ======================================================= */
+
+  const menPackages =
+    configuredPackages.filter(
+      (item: LifestylePackage) =>
+        item.category === "Men Health",
+    );
+
+  const womenPackages =
+    configuredPackages.filter(
+      (item: LifestylePackage) =>
+        item.category === "Women Health",
+    );
+
+  const otherPackages =
+    configuredPackages.filter(
+      (item: LifestylePackage) =>
+        item.category !== "Men Health" &&
+        item.category !== "Women Health",
+    );
 
   return (
     <section className="bg-[#fff8f7] py-12 sm:py-14 lg:py-16">
       <Container>
-        {/* Main Header */}
+        {/* =================================================
+            MAIN HEADER
+            ================================================= */}
+
         <div className="text-center">
           <span
             className="
@@ -359,44 +504,55 @@ export function PackagesSection() {
               text-blue-600
             "
           >
-            Packages
+            {content.badge}
           </span>
 
           <h2 className="mt-3 text-2xl font-bold text-gray-950 sm:text-3xl">
-            Personalized Health Checkup
+            {content.title}
           </h2>
 
           <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-500">
-            Choose a health package designed around
-            your age, lifestyle and wellness needs.
+            {content.description}
           </p>
         </div>
 
-        {/* Men's Health */}
+        {/* =================================================
+            MEN'S HEALTH
+            ================================================= */}
+
         <PackageRow
           title="Men's Health"
           category="Men Health"
           items={menPackages}
         />
 
-        {/* Women's Health */}
+        {/* =================================================
+            WOMEN'S HEALTH
+            ================================================= */}
+
         <PackageRow
           title="Women's Health"
           category="Women Health"
           items={womenPackages}
         />
 
-        {/* Other Health Packages */}
+        {/* =================================================
+            OTHER PACKAGES
+            ================================================= */}
+
         <PackageRow
           title="Popular Health Packages"
           category="Diabetes"
           items={otherPackages}
         />
 
-        {/* All Packages */}
+        {/* =================================================
+            ALL PACKAGES
+            ================================================= */}
+
         <div className="mt-10 flex justify-center">
           <Link
-            to="/packages"
+            to={content.viewAllLink}
             className="
               inline-flex
               items-center
@@ -415,7 +571,8 @@ export function PackagesSection() {
               hover:text-white
             "
           >
-            View All Packages
+            {content.viewAllText}
+
             <ArrowRight size={16} />
           </Link>
         </div>

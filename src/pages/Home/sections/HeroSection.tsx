@@ -7,6 +7,7 @@ import {
 
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -29,6 +30,10 @@ interface HeroSlide {
 const STORAGE_KEY =
   "diagnostic-admin-home-slides";
 
+/* =========================================================
+   DEFAULT HOME SLIDES
+   ========================================================= */
+
 const defaultSlides: HeroSlide[] = [
   {
     id: "hero-1",
@@ -43,6 +48,7 @@ const defaultSlides: HeroSlide[] = [
     imageUrl:
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1600&q=85",
   },
+
   {
     id: "hero-2",
     title: "Complete health checkups",
@@ -56,6 +62,7 @@ const defaultSlides: HeroSlide[] = [
     imageUrl:
       "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=1600&q=85",
   },
+
   {
     id: "hero-3",
     title: "Diagnostic testing",
@@ -71,93 +78,161 @@ const defaultSlides: HeroSlide[] = [
   },
 ];
 
+/* =========================================================
+   READ ADMIN CONFIGURATION
+   ========================================================= */
+
 function getSlides(): HeroSlide[] {
   try {
     const stored =
       localStorage.getItem(STORAGE_KEY);
 
-    if (stored) {
-      const parsed = JSON.parse(stored);
+    if (!stored) {
+      return defaultSlides;
+    }
 
-      if (
-        Array.isArray(parsed) &&
-        parsed.length > 0
-      ) {
-        return parsed;
-      }
+    const parsed = JSON.parse(stored);
+
+    if (
+      Array.isArray(parsed) &&
+      parsed.length > 0
+    ) {
+      return parsed;
     }
   } catch {
-    // Use default slides.
+    // Ignore invalid localStorage data.
   }
 
   return defaultSlides;
 }
 
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
 export function HeroSection() {
   const [slides, setSlides] =
     useState<HeroSlide[]>(getSlides);
 
-  const [current, setCurrent] =
+  /*
+   * currentIndex is the actual slide index.
+   *
+   * 0 = first slide
+   * 1 = second slide
+   * 2 = third slide
+   */
+  const [currentIndex, setCurrentIndex] =
     useState(0);
 
-  const [transitionEnabled, setTransitionEnabled] =
-    useState(true);
+  const [isPaused, setIsPaused] =
+    useState(false);
 
   const [search, setSearch] =
     useState("");
 
   /*
-   * We render an extra copy of the slides.
+   * We use duplicated slides:
    *
-   * Example:
+   * [1, 2, 3, 1]
    *
-   * 1 2 3 | 1 2 3
+   * When 3 moves to duplicate 1, the user sees
+   * a normal right-to-left animation.
    *
-   * The slider always moves →
-   *
-   * 1 → 2 → 3 → 1 → 2 → 3
-   *
-   * Therefore there is never a visible
-   * 3 → 2 → 1 reverse animation.
+   * After the animation completes we silently
+   * reset the internal index to real slide 1.
    */
-  const sliderSlides = [
-    ...slides,
-    ...slides,
-  ];
+  const sliderSlides = useMemo(() => {
+    if (slides.length <= 1) {
+      return slides;
+    }
 
-  /*
-   * Reload admin changes when another tab
-   * changes localStorage.
-   */
+    return [
+      ...slides,
+      slides[0],
+    ];
+  }, [slides]);
+
+  /* =======================================================
+     LOAD ADMIN CHANGES
+     ======================================================= */
+
   useEffect(() => {
-    const handleStorage = () => {
-      setSlides(getSlides());
+    const handleStorageChange = () => {
+      const updatedSlides = getSlides();
+
+      setSlides(updatedSlides);
+      setCurrentIndex(0);
     };
 
     window.addEventListener(
       "storage",
-      handleStorage,
+      handleStorageChange,
     );
 
     return () => {
       window.removeEventListener(
         "storage",
-        handleStorage,
+        handleStorageChange,
       );
     };
   }, []);
 
   /*
-   * Automatic right → left movement.
+   * Also listen for the custom event if the admin panel
+   * updates localStorage in the same browser tab.
    */
   useEffect(() => {
-    if (slides.length <= 1) {
+    const handleAdminUpdate = () => {
+      const updatedSlides = getSlides();
+
+      setSlides(updatedSlides);
+      setCurrentIndex(0);
+    };
+
+    window.addEventListener(
+      "diagnostic-home-updated",
+      handleAdminUpdate,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "diagnostic-home-updated",
+        handleAdminUpdate,
+      );
+    };
+  }, []);
+
+  /* =======================================================
+     KEEP INDEX VALID
+     ======================================================= */
+
+  useEffect(() => {
+    if (
+      slides.length > 0 &&
+      currentIndex >= slides.length
+    ) {
+      setCurrentIndex(0);
+    }
+  }, [
+    slides.length,
+    currentIndex,
+  ]);
+
+  /* =======================================================
+     AUTOMATIC SLIDER
+     ======================================================= */
+
+  useEffect(() => {
+    if (
+      slides.length <= 1 ||
+      isPaused
+    ) {
       return;
     }
 
     const timer =
       window.setInterval(() => {
-        setCurrent(
+        setCurrentIndex(
           (previous) =>
             previous + 1,
         );
@@ -166,129 +241,177 @@ export function HeroSection() {
     return () => {
       window.clearInterval(timer);
     };
-  }, [slides.length]);
+  }, [
+    slides.length,
+    isPaused,
+  ]);
 
-  /*
-   * When we reach the duplicated first slide,
-   * silently jump back to the real first slide.
-   *
-   * This happens AFTER the animation has finished,
-   * so the user never sees a reverse movement.
-   */
+  /* =======================================================
+     INFINITE LOOP RESET
+     ======================================================= */
+
   useEffect(() => {
     if (
-      current === slides.length &&
-      slides.length > 0
+      slides.length <= 1 ||
+      currentIndex !== slides.length
     ) {
-      const timer =
-        window.setTimeout(() => {
-          setTransitionEnabled(false);
-          setCurrent(0);
+      return;
+    }
 
-          /*
-           * Re-enable transition after the
-           * invisible reset.
-           */
-          window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(() => {
-              setTransitionEnabled(true);
-            });
+    /*
+     * Wait until the CSS animation has completed.
+     */
+    const timer =
+      window.setTimeout(() => {
+        /*
+         * Disable animation temporarily.
+         */
+        const element =
+          document.getElementById(
+            "home-hero-slider",
+          );
+
+        if (element) {
+          element.style.transition =
+            "none";
+        }
+
+        setCurrentIndex(0);
+
+        /*
+         * Force browser to process the
+         * position before re-enabling transition.
+         */
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (element) {
+              element.style.transition =
+                "";
+            }
           });
-        }, 700);
+        });
+      }, 700);
 
-      return () => {
-        window.clearTimeout(timer);
-      };
-    }
-  }, [current, slides.length]);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [
+    currentIndex,
+    slides.length,
+  ]);
 
-  /*
-   * If admin removes slides while the page
-   * is open, keep index valid.
-   */
-  useEffect(() => {
-    if (
-      slides.length > 0 &&
-      current > slides.length
-    ) {
-      setCurrent(0);
-    }
-  }, [slides.length, current]);
+  /* =======================================================
+     NEXT
+     ======================================================= */
 
-  if (slides.length === 0) {
-    return null;
-  }
-
-  /*
-   * Current visible slide for buttons/content.
-   */
-  const visibleIndex =
-    current % slides.length;
-
-  /*
-   * Next button.
-   *
-   * Always moves right → left.
-   */
   const nextSlide = () => {
-    setTransitionEnabled(true);
+    if (slides.length <= 1) {
+      return;
+    }
 
-    setCurrent(
+    setCurrentIndex(
       (previous) =>
         previous + 1,
     );
   };
 
-  /*
-   * Previous button.
-   *
-   * This is only for manual navigation.
-   * Automatic navigation remains strictly
-   * right → left.
-   */
+  /* =======================================================
+     PREVIOUS
+     ======================================================= */
+
   const previousSlide = () => {
-    if (current === 0) {
-      /*
-       * Jump to duplicated last slide.
-       *
-       * Disable transition for the jump,
-       * then move to the previous position.
-       */
-      setTransitionEnabled(false);
+    if (slides.length <= 1) {
+      return;
+    }
 
-      setCurrent(slides.length);
+    /*
+     * If currently on first slide,
+     * move visually to the duplicate last
+     * position without showing reverse animation.
+     */
+    if (currentIndex === 0) {
+      const element =
+        document.getElementById(
+          "home-hero-slider",
+        );
 
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          setTransitionEnabled(true);
-          setCurrent(
+      if (element) {
+        element.style.transition =
+          "none";
+      }
+
+      setCurrentIndex(
+        slides.length,
+      );
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setCurrentIndex(
             slides.length - 1,
           );
+
+          requestAnimationFrame(() => {
+            if (element) {
+              element.style.transition =
+                "";
+            }
+          });
         });
       });
 
       return;
     }
 
-    setTransitionEnabled(true);
-
-    setCurrent(
+    setCurrentIndex(
       (previous) =>
         previous - 1,
     );
   };
 
+  /* =======================================================
+     DOT NAVIGATION
+     ======================================================= */
+
+  const goToSlide = (
+    index: number,
+  ) => {
+    setCurrentIndex(index);
+  };
+
+  /* =======================================================
+     EMPTY STATE
+     ======================================================= */
+
+  if (slides.length === 0) {
+    return null;
+  }
+
+  /*
+   * Current visible dot.
+   */
+  const activeDot =
+    currentIndex %
+    slides.length;
+
   return (
     <section className="bg-[#f6f8fb] py-4 sm:py-5 lg:py-6">
       <Container>
+        {/* =================================================
+            HERO
+            ================================================= */}
 
-        {/* =========================================
-            HERO BANNER
-            ========================================= */}
-
-        <div className="relative">
-
-          {/* Banner */}
+        <div
+          className="relative"
+          onMouseEnter={() =>
+            setIsPaused(true)
+          }
+          onMouseLeave={() =>
+            setIsPaused(false)
+          }
+        >
+          {/* =================================================
+              SLIDER CONTAINER
+              ================================================= */}
 
           <div
             className="
@@ -301,25 +424,31 @@ export function HeroSection() {
               shadow-sm
             "
           >
-
-            {/* Slider Track */}
+            {/* =================================================
+                SLIDER TRACK
+                ================================================= */}
 
             <div
-              className={`flex ${
-                transitionEnabled
-                  ? "transition-transform duration-700 ease-in-out"
-                  : ""
-              }`}
+              id="home-hero-slider"
+              className="
+                flex
+                transition-transform
+                duration-700
+                ease-in-out
+              "
               style={{
                 transform: `translateX(-${
-                  current * 100
+                  currentIndex * 100
                 }%)`,
               }}
             >
               {sliderSlides.map(
-                (item, index) => (
+                (
+                  slide,
+                  index,
+                ) => (
                   <div
-                    key={`${item.id}-${index}`}
+                    key={`${slide.id}-${index}`}
                     className="
                       relative
                       min-w-full
@@ -329,11 +458,14 @@ export function HeroSection() {
                       lg:h-[440px]
                     "
                   >
-
-                    {/* Background Image */}
+                    {/* =================================================
+                        IMAGE
+                        ================================================= */}
 
                     <img
-                      src={item.imageUrl}
+                      src={
+                        slide.imageUrl
+                      }
                       alt=""
                       className="
                         absolute
@@ -344,7 +476,9 @@ export function HeroSection() {
                       "
                     />
 
-                    {/* Dark gradient only on left */}
+                    {/* =================================================
+                        LEFT DARK OVERLAY
+                        ================================================= */}
 
                     <div
                       className="
@@ -357,7 +491,9 @@ export function HeroSection() {
                       "
                     />
 
-                    {/* Content */}
+                    {/* =================================================
+                        CONTENT
+                        ================================================= */}
 
                     <div
                       className="
@@ -376,6 +512,7 @@ export function HeroSection() {
                           text-white
                         "
                       >
+                        {/* Badge */}
 
                         <div
                           className="
@@ -391,8 +528,11 @@ export function HeroSection() {
                             sm:text-sm
                           "
                         >
-                          Trusted diagnostic testing
+                          Trusted diagnostic
+                          testing
                         </div>
+
+                        {/* Title */}
 
                         <h1
                           className="
@@ -404,7 +544,7 @@ export function HeroSection() {
                             lg:text-5xl
                           "
                         >
-                          {item.title}
+                          {slide.title}
 
                           <span
                             className="
@@ -412,9 +552,13 @@ export function HeroSection() {
                               text-blue-200
                             "
                           >
-                            {item.highlight}
+                            {
+                              slide.highlight
+                            }
                           </span>
                         </h1>
+
+                        {/* Description */}
 
                         <p
                           className="
@@ -427,10 +571,14 @@ export function HeroSection() {
                             sm:leading-7
                           "
                         >
-                          {item.description}
+                          {
+                            slide.description
+                          }
                         </p>
 
-                        {/* Buttons */}
+                        {/* =================================================
+                            BUTTONS
+                            ================================================= */}
 
                         <div
                           className="
@@ -442,7 +590,7 @@ export function HeroSection() {
                         >
                           <Link
                             to={
-                              item.primaryButtonLink
+                              slide.primaryButtonLink
                             }
                             className="
                               inline-flex
@@ -461,7 +609,7 @@ export function HeroSection() {
                             "
                           >
                             {
-                              item.primaryButtonText
+                              slide.primaryButtonText
                             }
 
                             <ArrowRight
@@ -471,7 +619,7 @@ export function HeroSection() {
 
                           <Link
                             to={
-                              item.secondaryButtonLink
+                              slide.secondaryButtonLink
                             }
                             className="
                               inline-flex
@@ -491,7 +639,7 @@ export function HeroSection() {
                             "
                           >
                             {
-                              item.secondaryButtonText
+                              slide.secondaryButtonText
                             }
                           </Link>
                         </div>
@@ -502,9 +650,9 @@ export function HeroSection() {
               )}
             </div>
 
-            {/* =====================================
+            {/* =================================================
                 DOTS
-                ===================================== */}
+                ================================================= */}
 
             {slides.length > 1 && (
               <div
@@ -524,19 +672,19 @@ export function HeroSection() {
                 "
               >
                 {slides.map(
-                  (item, index) => (
+                  (
+                    slide,
+                    index,
+                  ) => (
                     <button
-                      key={item.id}
+                      key={slide.id}
                       type="button"
                       aria-label={`Go to slide ${
                         index + 1
                       }`}
-                      onClick={() => {
-                        setTransitionEnabled(
-                          true,
-                        );
-                        setCurrent(index);
-                      }}
+                      onClick={() =>
+                        goToSlide(index)
+                      }
                       className={`
                         h-2
                         rounded-full
@@ -544,7 +692,7 @@ export function HeroSection() {
                         duration-300
                         ${
                           index ===
-                          visibleIndex
+                          activeDot
                             ? "w-7 bg-white"
                             : "w-2 bg-white/50 hover:bg-white"
                         }
@@ -556,9 +704,9 @@ export function HeroSection() {
             )}
           </div>
 
-          {/* =========================================
+          {/* =================================================
               LEFT ARROW
-              ========================================= */}
+              ================================================= */}
 
           {slides.length > 1 && (
             <button
@@ -596,9 +744,9 @@ export function HeroSection() {
             </button>
           )}
 
-          {/* =========================================
+          {/* =================================================
               RIGHT ARROW
-              ========================================= */}
+              ================================================= */}
 
           {slides.length > 1 && (
             <button
@@ -637,9 +785,9 @@ export function HeroSection() {
           )}
         </div>
 
-        {/* =========================================
-            SEARCH
-            ========================================= */}
+        {/* =================================================
+            SEARCH BAR
+            ================================================= */}
 
         <div
           className="
@@ -685,9 +833,7 @@ export function HeroSection() {
                     event.target.value,
                   )
                 }
-                placeholder="
-                  Search tests, packages or health checkups
-                "
+                placeholder="Search tests, packages or health checkups"
                 className="
                   min-w-0
                   flex-1
@@ -723,9 +869,9 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* =========================================
+        {/* =================================================
             QUICK SERVICES
-            ========================================= */}
+            ================================================= */}
 
         <div
           className="
@@ -757,6 +903,10 @@ export function HeroSection() {
     </section>
   );
 }
+
+/* ===========================================================
+   QUICK CARD
+   =========================================================== */
 
 function QuickCard({
   title,

@@ -1,12 +1,11 @@
 import {
-  ArrowLeft,
   ArrowRight,
-  ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import {
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -15,67 +14,77 @@ import { Link } from "react-router-dom";
 import { Container } from "../../../components/common/Container";
 
 import {
-  defaultHomeSlides,
-  HOME_SLIDER_STORAGE_KEY,
-  type HomeSlide,
-} from "../../../features/home/homeSliderData";
+  getHomeContent,
+  type HeroSlide,
+} from "../../../features/home/homeConfig";
 
 export function HeroSliderSection() {
+  /*
+   * =========================================================
+   * LOAD SLIDES FROM ADMIN CONFIG
+   * =========================================================
+   */
+
+  const loadSlides = (): HeroSlide[] => {
+    const content = getHomeContent();
+
+    return content.heroSlides.filter(
+      (slide) => slide.enabled,
+    );
+  };
+
   const [slides, setSlides] =
-    useState<HomeSlide[]>(defaultHomeSlides);
+    useState<HeroSlide[]>(loadSlides);
 
   const [currentIndex, setCurrentIndex] =
     useState(0);
 
   /*
-   * Load admin-controlled slides
+   * =========================================================
+   * RELOAD WHEN ADMIN CHANGES CONTENT
+   * =========================================================
    */
+
   useEffect(() => {
-    const loadSlides = () => {
-      const stored =
-        localStorage.getItem(
-          HOME_SLIDER_STORAGE_KEY,
-        );
+    const reloadSlides = () => {
+      const updatedSlides = loadSlides();
 
-      if (!stored) {
-        setSlides(defaultHomeSlides);
-        return;
-      }
+      setSlides(updatedSlides);
 
-      try {
-        const parsed: unknown =
-          JSON.parse(stored);
-
-        if (!Array.isArray(parsed)) {
-          setSlides(defaultHomeSlides);
-          return;
+      setCurrentIndex((previous) => {
+        if (
+          updatedSlides.length === 0
+        ) {
+          return 0;
         }
 
-        const activeSlides =
-          parsed.filter(
-            (slide): slide is HomeSlide =>
-              Boolean(
-                slide &&
-                  typeof slide === "object" &&
-                  "active" in slide &&
-                  slide.active === true,
-              ),
-          );
-
-        setSlides(
-          activeSlides.length > 0
-            ? activeSlides
-            : defaultHomeSlides,
+        return Math.min(
+          previous,
+          updatedSlides.length - 1,
         );
-      } catch {
-        setSlides(defaultHomeSlides);
-      }
+      });
     };
 
-    loadSlides();
+    /*
+     * Same-tab update.
+     */
+    window.addEventListener(
+      "home-content-updated",
+      reloadSlides,
+    );
 
-    const handleStorage = () => {
-      loadSlides();
+    /*
+     * Another-tab update.
+     */
+    const handleStorage = (
+      event: StorageEvent,
+    ) => {
+      if (
+        event.key ===
+        "diagnostic_home_content"
+      ) {
+        reloadSlides();
+      }
     };
 
     window.addEventListener(
@@ -85,6 +94,11 @@ export function HeroSliderSection() {
 
     return () => {
       window.removeEventListener(
+        "home-content-updated",
+        reloadSlides,
+      );
+
+      window.removeEventListener(
         "storage",
         handleStorage,
       );
@@ -92,55 +106,82 @@ export function HeroSliderSection() {
   }, []);
 
   /*
-   * Keep index valid if slides change
+   * =========================================================
+   * KEEP INDEX VALID
+   * =========================================================
    */
+
   useEffect(() => {
+    if (slides.length === 0) {
+      setCurrentIndex(0);
+      return;
+    }
+
     if (
       currentIndex >= slides.length
     ) {
       setCurrentIndex(0);
     }
-  }, [slides.length, currentIndex]);
+  }, [
+    currentIndex,
+    slides.length,
+  ]);
 
   /*
-   * Auto slide
+   * =========================================================
+   * AUTO SLIDER
+   * =========================================================
    */
+
   useEffect(() => {
     if (slides.length <= 1) {
       return;
     }
 
-    const timer = window.setInterval(() => {
-      setCurrentIndex(
-        (previous) =>
-          (previous + 1) %
-          slides.length,
-      );
-    }, 5000);
+    const timer =
+      window.setInterval(() => {
+        setCurrentIndex(
+          (previous) =>
+            (previous + 1) %
+            slides.length,
+        );
+      }, 5000);
 
     return () => {
       window.clearInterval(timer);
     };
   }, [slides.length]);
 
-  const currentSlide =
-    useMemo(
-      () =>
-        slides[currentIndex] ??
-        defaultHomeSlides[0],
-      [slides, currentIndex],
-    );
+  /*
+   * =========================================================
+   * EMPTY STATE
+   * =========================================================
+   */
 
-  if (!currentSlide) {
+  if (slides.length === 0) {
     return null;
   }
 
+  /*
+   * =========================================================
+   * CURRENT SLIDE
+   * =========================================================
+   */
+
+  const currentSlide =
+    slides[currentIndex];
+
+  /*
+   * =========================================================
+   * NAVIGATION
+   * =========================================================
+   */
+
   const goPrevious = () => {
-    setCurrentIndex(
-      (previous) =>
-        previous === 0
-          ? slides.length - 1
-          : previous - 1,
+    setCurrentIndex((previous) =>
+      previous === 0
+        ? slides.length - 1
+        : previous - 1,
     );
   };
 
@@ -152,54 +193,206 @@ export function HeroSliderSection() {
     );
   };
 
+  /*
+   * =========================================================
+   * RENDER
+   * =========================================================
+   */
+
   return (
-    <section className="relative overflow-hidden bg-gray-50">
+    <section className="bg-[#f6f8fb] py-4 sm:py-5 lg:py-6">
       <Container>
-        <div className="relative py-5 sm:py-7 lg:py-8">
-          <div className="relative min-h-[430px] overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 to-teal-600 shadow-xl sm:min-h-[470px] lg:min-h-[500px]">
+        <div className="relative">
+          {/* =================================================
+              SLIDER
+              ================================================= */}
+
+          <div
+            className="
+              relative
+              mx-auto
+              w-full
+              max-w-[1205px]
+              overflow-hidden
+              rounded-[20px]
+              shadow-sm
+            "
+          >
             {/* =================================================
-                BACKGROUND IMAGE
+                IMAGE
                 ================================================= */}
 
-            <div className="absolute inset-0">
+            <div className="relative h-[300px] sm:h-[360px] md:h-[400px] lg:h-[440px]">
               <img
-                src={currentSlide.imageUrl}
-                alt=""
-                className="h-full w-full object-cover"
+                key={currentSlide.id}
+                src={currentSlide.image}
+                alt={currentSlide.title}
+                className="
+                  absolute
+                  inset-0
+                  h-full
+                  w-full
+                  object-cover
+                  transition-opacity
+                  duration-500
+                "
               />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-blue-900/70 to-blue-900/20" />
-            </div>
+              {/* =================================================
+                  DARK OVERLAY
+                  ================================================= */}
 
-            {/* =================================================
-                CONTENT
-                ================================================= */}
+              <div
+                className="
+                  absolute
+                  inset-0
+                  bg-gradient-to-r
+                  from-black/70
+                  via-black/30
+                  to-transparent
+                "
+              />
 
-            <div className="relative z-10 flex min-h-[430px] items-center px-6 py-12 sm:min-h-[470px] sm:px-10 lg:min-h-[500px] lg:px-16">
-              <div className="max-w-2xl text-white">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
-                  <ShieldCheck size={17} />
+              {/* =================================================
+                  CONTENT
+                  ================================================= */}
 
-                  Trusted diagnostic testing
-                </div>
+              <div
+                className="
+                  relative
+                  flex
+                  h-full
+                  items-center
+                  px-6
+                  sm:px-10
+                  lg:px-14
+                "
+              >
+                <div
+                  className="
+                    max-w-xl
+                    text-white
+                  "
+                >
+                  {/* Badge */}
 
-                <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-                  {currentSlide.title}
-                </h1>
+                  {currentSlide.badge && (
+                    <div
+                      className="
+                        mb-4
+                        inline-flex
+                        rounded-full
+                        bg-white/15
+                        px-3
+                        py-1.5
+                        text-xs
+                        font-semibold
+                        backdrop-blur-sm
+                        sm:text-sm
+                      "
+                    >
+                      {currentSlide.badge}
+                    </div>
+                  )}
 
-                <p className="mt-5 max-w-xl text-base leading-7 text-blue-50 sm:text-lg sm:leading-8">
-                  {currentSlide.subtitle}
-                </p>
+                  {/* Title */}
 
-                <div className="mt-8">
-                  <Link
-                    to={currentSlide.buttonLink}
-                    className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-blue-700 shadow-lg transition hover:bg-blue-50"
+                  <h1
+                    className="
+                      text-3xl
+                      font-extrabold
+                      leading-tight
+                      tracking-tight
+                      sm:text-4xl
+                      lg:text-5xl
+                    "
                   >
-                    {currentSlide.buttonText}
+                    {currentSlide.title}{" "}
 
-                    <ArrowRight size={18} />
-                  </Link>
+                    <span className="text-blue-300">
+                      {currentSlide.highlight}
+                    </span>
+                  </h1>
+
+                  {/* Description */}
+
+                  <p
+                    className="
+                      mt-4
+                      max-w-xl
+                      text-sm
+                      leading-6
+                      text-white/90
+                      sm:text-base
+                    "
+                  >
+                    {
+                      currentSlide.description
+                    }
+                  </p>
+
+                  {/* Buttons */}
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link
+                      to={
+                        currentSlide.primaryButtonLink
+                      }
+                      className="
+                        inline-flex
+                        items-center
+                        gap-2
+                        rounded-xl
+                        bg-blue-600
+                        px-5
+                        py-3
+                        text-sm
+                        font-bold
+                        text-white
+                        transition
+                        hover:bg-blue-700
+                      "
+                    >
+                      {
+                        currentSlide.primaryButtonText
+                      }
+
+                      <ArrowRight
+                        size={17}
+                      />
+                    </Link>
+
+                    {currentSlide
+                      .secondaryButtonText && (
+                      <Link
+                        to={
+                          currentSlide.secondaryButtonLink
+                        }
+                        className="
+                          inline-flex
+                          items-center
+                          gap-2
+                          rounded-xl
+                          border
+                          border-white/60
+                          bg-white/10
+                          px-5
+                          py-3
+                          text-sm
+                          font-bold
+                          text-white
+                          backdrop-blur-sm
+                          transition
+                          hover:bg-white
+                          hover:text-gray-900
+                        "
+                      >
+                        {
+                          currentSlide.secondaryButtonText
+                        }
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -209,29 +402,71 @@ export function HeroSliderSection() {
                 ================================================= */}
 
             {slides.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  aria-label="Previous slide"
-                  onClick={goPrevious}
-                  className="absolute left-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 sm:left-5 sm:h-11 sm:w-11"
-                >
-                  <ArrowLeft size={20} />
-                </button>
+              <button
+                type="button"
+                onClick={goPrevious}
+                aria-label="Previous slide"
+                className="
+                  absolute
+                  left-[-1px]
+                  top-1/2
+                  z-20
+                  flex
+                  h-11
+                  w-11
+                  -translate-y-1/2
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-gray-200
+                  bg-white
+                  text-blue-600
+                  shadow-md
+                  transition
+                  hover:bg-blue-50
+                "
+              >
+                <ChevronLeft
+                  size={21}
+                />
+              </button>
+            )}
 
-                {/* =================================================
-                    NEXT
-                    ================================================= */}
+            {/* =================================================
+                NEXT
+                ================================================= */}
 
-                <button
-                  type="button"
-                  aria-label="Next slide"
-                  onClick={goNext}
-                  className="absolute right-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition hover:bg-white/30 sm:right-5 sm:h-11 sm:w-11"
-                >
-                  <ArrowRight size={20} />
-                </button>
-              </>
+            {slides.length > 1 && (
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="Next slide"
+                className="
+                  absolute
+                  right-[-1px]
+                  top-1/2
+                  z-20
+                  flex
+                  h-11
+                  w-11
+                  -translate-y-1/2
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-gray-200
+                  bg-white
+                  text-blue-600
+                  shadow-md
+                  transition
+                  hover:bg-blue-50
+                "
+              >
+                <ChevronRight
+                  size={21}
+                />
+              </button>
             )}
 
             {/* =================================================
@@ -239,7 +474,18 @@ export function HeroSliderSection() {
                 ================================================= */}
 
             {slides.length > 1 && (
-              <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
+              <div
+                className="
+                  absolute
+                  bottom-5
+                  left-1/2
+                  z-20
+                  flex
+                  -translate-x-1/2
+                  items-center
+                  gap-2
+                "
+              >
                 {slides.map(
                   (slide, index) => (
                     <button
@@ -249,13 +495,21 @@ export function HeroSliderSection() {
                         index + 1
                       }`}
                       onClick={() =>
-                        setCurrentIndex(index)
+                        setCurrentIndex(
+                          index,
+                        )
                       }
-                      className={`h-2.5 rounded-full transition-all ${
-                        index === currentIndex
-                          ? "w-8 bg-white"
-                          : "w-2.5 bg-white/50 hover:bg-white/80"
-                      }`}
+                      className={`
+                        h-2.5
+                        rounded-full
+                        transition-all
+                        ${
+                          index ===
+                          currentIndex
+                            ? "w-8 bg-white"
+                            : "w-2.5 bg-white/50 hover:bg-white/80"
+                        }
+                      `}
                     />
                   ),
                 )}

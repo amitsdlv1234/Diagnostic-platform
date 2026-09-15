@@ -4,6 +4,7 @@ import {
   Gift,
   Home,
   Package,
+  Palette,
   Stethoscope,
 } from "lucide-react";
 
@@ -46,6 +47,12 @@ const cards = [
     icon: FileText,
     path: "/admin/bookings",
   },
+  {
+  title: "Theme & Appearance",
+  description: "Customize colours and website appearance",
+  icon: Palette,
+  path: "/admin/theme",
+},
 ];
 
 export function AdminDashboard() {

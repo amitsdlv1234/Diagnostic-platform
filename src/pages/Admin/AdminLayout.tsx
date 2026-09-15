@@ -8,7 +8,7 @@ import {
   Stethoscope,
   FileText,
 } from "lucide-react";
-
+import { Palette } from "lucide-react";
 import {
   NavLink,
   Outlet,
@@ -51,6 +51,11 @@ const links = [
     label: "Bookings",
     icon: FileText,
   },
+  {
+    to: "/admin/theme",
+    label: "Theme & Appearance",
+    icon: Palette,
+  }
 ];
 
 export function AdminLayout() {
@@ -78,10 +83,9 @@ export function AdminLayout() {
                   to={link.to}
                   end={link.end}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
-                      isActive
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${isActive
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`
                   }
                 >

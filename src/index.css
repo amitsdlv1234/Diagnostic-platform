@@ -75,3 +75,90 @@ a {
 .animate-hero-slide-right {
   animation: heroSlideRight 650ms ease-out;
 }
+
+:root {
+  --theme-primary: #2563eb;
+  --theme-primary-light: #eff6ff;
+  --theme-primary-text: #1d4ed8;
+}
+
+/* =====================================================
+   ADMIN / GLOBAL THEME
+   ===================================================== */
+
+.theme-primary {
+  color: var(--theme-primary);
+}
+
+.theme-primary-bg {
+  background-color: var(--theme-primary);
+}
+
+.theme-primary-light-bg {
+  background-color: var(--theme-primary-light);
+}
+
+.theme-primary-border {
+  border-color: var(--theme-primary);
+}
+
+/* =====================================================
+   COMMON BLUE TAILWIND OVERRIDES
+   This allows existing UI to follow admin theme
+   ===================================================== */
+
+.bg-blue-600 {
+  background-color: var(--theme-primary) !important;
+}
+
+.bg-blue-700 {
+  background-color: var(--theme-primary-text) !important;
+}
+
+.bg-blue-50 {
+  background-color: var(--theme-primary-light) !important;
+}
+
+.text-blue-600 {
+  color: var(--theme-primary) !important;
+}
+
+.text-blue-700 {
+  color: var(--theme-primary-text) !important;
+}
+
+.border-blue-500 {
+  border-color: var(--theme-primary) !important;
+}
+
+.border-blue-600 {
+  border-color: var(--theme-primary) !important;
+}
+
+/* =====================================================
+   RADIUS
+   ===================================================== */
+
+[data-radius="small"] .rounded-xl {
+  border-radius: 0.5rem;
+}
+
+[data-radius="small"] .rounded-2xl {
+  border-radius: 0.75rem;
+}
+
+[data-radius="large"] .rounded-xl {
+  border-radius: 1rem;
+}
+
+[data-radius="large"] .rounded-2xl {
+  border-radius: 1.5rem;
+}
+
+/* =====================================================
+   SOFT MODE
+   ===================================================== */
+
+[data-theme-mode="soft"] body {
+  background-color: #f8fafc;
+}
