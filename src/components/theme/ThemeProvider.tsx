@@ -7,39 +7,38 @@ import {
 } from "react";
 
 import {
-  defaultTheme,
-  themeColors,
-  type ThemeSettings,
-} from "./themeTypes";
-
-const STORAGE_KEY = "diagnostic-admin-theme";
+  defaultThemeConfig,
+  getThemeConfig,
+  saveThemeConfig,
+  THEME_UPDATED_EVENT,
+  type ThemeConfig,
+  type SectionColors,
+  type SectionName,
+} from "../../features/theme/themeConfig";
 
 interface ThemeContextType {
-  theme: ThemeSettings;
-  setTheme: (theme: ThemeSettings) => void;
+  theme: ThemeConfig;
+
+  setTheme: (
+    theme: ThemeConfig,
+  ) => void;
+
   resetTheme: () => void;
+
+  updateSectionColors: (
+    section: SectionName,
+    colors: Partial<SectionColors>,
+  ) => void;
+
+  getSectionColors: (
+    section: SectionName,
+  ) => SectionColors;
 }
 
 const ThemeContext =
-  createContext<ThemeContextType | null>(null);
-
-function loadTheme(): ThemeSettings {
-  try {
-    const stored =
-      localStorage.getItem(STORAGE_KEY);
-
-    if (stored) {
-      return {
-        ...defaultTheme,
-        ...JSON.parse(stored),
-      };
-    }
-  } catch {
-    // Use default theme.
-  }
-
-  return defaultTheme;
-}
+  createContext<ThemeContextType | null>(
+    null,
+  );
 
 export function ThemeProvider({
   children,
@@ -47,47 +46,189 @@ export function ThemeProvider({
   children: ReactNode;
 }) {
   const [theme, setThemeState] =
-    useState<ThemeSettings>(loadTheme);
+    useState<ThemeConfig>(() =>
+      getThemeConfig(),
+    );
 
+  /*
+   * Apply theme whenever theme changes.
+   */
   useEffect(() => {
-    const root = document.documentElement;
+    const root =
+      document.documentElement;
 
-    const color =
-      themeColors[theme.color];
-
+    /*
+     * Global primary color
+     */
     root.style.setProperty(
       "--theme-primary",
-      color.primary,
+      theme.primaryColor,
     );
 
-    root.style.setProperty(
-      "--theme-primary-light",
-      color.light,
+    /*
+     * Apply section colors
+     */
+    (
+      Object.entries(
+        theme.sections,
+      ) as [
+        SectionName,
+        SectionColors,
+      ][]
+    ).forEach(
+      ([sectionName, colors]) => {
+        const prefix =
+          `--section-${sectionName}`;
+
+        root.style.setProperty(
+          `${prefix}-background`,
+          colors.background,
+        );
+
+        root.style.setProperty(
+          `${prefix}-heading`,
+          colors.heading,
+        );
+
+        root.style.setProperty(
+          `${prefix}-text`,
+          colors.text,
+        );
+
+        root.style.setProperty(
+          `${prefix}-accent`,
+          colors.accent,
+        );
+
+        root.style.setProperty(
+          `${prefix}-button-background`,
+          colors.buttonBackground,
+        );
+
+        root.style.setProperty(
+          `${prefix}-button-text`,
+          colors.buttonText,
+        );
+
+        root.style.setProperty(
+          `${prefix}-card-background`,
+          colors.cardBackground,
+        );
+
+        root.style.setProperty(
+          `${prefix}-border`,
+          colors.border,
+        );
+      },
     );
 
-    root.style.setProperty(
-      "--theme-primary-text",
-      color.text,
-    );
-
-    root.dataset.theme = theme.color;
-    root.dataset.themeMode = theme.mode;
-    root.dataset.radius = theme.borderRadius;
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(theme),
-    );
+    /*
+     * Save theme.
+     */
+    saveThemeConfig(theme);
   }, [theme]);
 
+  /*
+   * Listen for changes from another tab.
+   */
+  useEffect(() => {
+    const handleStorage = (
+      event: StorageEvent,
+    ) => {
+      if (
+        event.key ===
+        "diagnostic_theme_config"
+      ) {
+        setThemeState(
+          getThemeConfig(),
+        );
+      }
+    };
+
+    const handleThemeUpdate = () => {
+      setThemeState(
+        getThemeConfig(),
+      );
+    };
+
+    window.addEventListener(
+      "storage",
+      handleStorage,
+    );
+
+    window.addEventListener(
+      THEME_UPDATED_EVENT,
+      handleThemeUpdate,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        handleStorage,
+      );
+
+      window.removeEventListener(
+        THEME_UPDATED_EVENT,
+        handleThemeUpdate,
+      );
+    };
+  }, []);
+
+  /*
+   * Replace complete theme.
+   */
   const setTheme = (
-    nextTheme: ThemeSettings,
+    nextTheme: ThemeConfig,
   ) => {
     setThemeState(nextTheme);
   };
 
+  /*
+   * Reset complete theme.
+   */
   const resetTheme = () => {
-    setThemeState(defaultTheme);
+    setThemeState(
+      structuredClone(
+        defaultThemeConfig,
+      ),
+    );
+  };
+
+  /*
+   * Update one section's colors.
+   */
+  const updateSectionColors = (
+    section: SectionName,
+    colors: Partial<SectionColors>,
+  ) => {
+    setThemeState(
+      (
+        previous: ThemeConfig,
+      ): ThemeConfig => ({
+        ...previous,
+
+        sections: {
+          ...previous.sections,
+
+          [section]: {
+            ...previous.sections[
+              section
+            ],
+
+            ...colors,
+          },
+        },
+      }),
+    );
+  };
+
+  /*
+   * Get one section's colors.
+   */
+  const getSectionColors = (
+    section: SectionName,
+  ): SectionColors => {
+    return theme.sections[section];
   };
 
   return (
@@ -96,6 +237,8 @@ export function ThemeProvider({
         theme,
         setTheme,
         resetTheme,
+        updateSectionColors,
+        getSectionColors,
       }}
     >
       {children}

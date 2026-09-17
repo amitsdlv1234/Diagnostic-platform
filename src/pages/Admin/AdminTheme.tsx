@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 
 import {
+  useEffect,
   useState,
 } from "react";
 
@@ -13,18 +14,119 @@ import {
   useTheme,
 } from "../../components/theme/ThemeProvider";
 
-import {
-  themeColors,
-  type ThemeColor,
-} from "../../components/theme/themeTypes";
+import type {
+  SectionColors,
+  SectionName,
+  ThemeConfig,
+} from "../../features/theme/themeConfig";
 
-const colorOptions: ThemeColor[] = [
-  "blue",
-  "green",
-  "purple",
-  "orange",
-  "teal",
-  "red",
+const sectionOptions: {
+  key: SectionName;
+  name: string;
+  description: string;
+}[] = [
+  {
+    key: "hero",
+    name: "Hero Slider",
+    description: "Main banner / hero section",
+  },
+  {
+    key: "popularTests",
+    name: "Popular Tests",
+    description: "Popular diagnostic tests",
+  },
+  {
+    key: "packages",
+    name: "Packages",
+    description: "Health packages section",
+  },
+  {
+    key: "homeCollection",
+    name: "Home Collection",
+    description: "Home sample collection section",
+  },
+  {
+    key: "centres",
+    name: "Diagnostic Centres",
+    description: "Diagnostic centre section",
+  },
+  {
+    key: "whyChooseUs",
+    name: "Why Choose Us",
+    description: "Benefits / advantages section",
+  },
+  {
+    key: "howItWorks",
+    name: "How It Works",
+    description: "Process / steps section",
+  },
+  {
+    key: "articles",
+    name: "Health Articles",
+    description: "Articles and blogs section",
+  },
+  {
+    key: "testimonials",
+    name: "Testimonials",
+    description: "Patient testimonials section",
+  },
+  {
+    key: "faq",
+    name: "FAQ",
+    description: "Frequently asked questions",
+  },
+  {
+    key: "cta",
+    name: "CTA",
+    description: "Call-to-action section",
+  },
+];
+
+const colorFields: {
+  key: keyof SectionColors;
+  label: string;
+  description: string;
+}[] = [
+  {
+    key: "background",
+    label: "Background",
+    description: "Main section background",
+  },
+  {
+    key: "heading",
+    label: "Heading",
+    description: "Main headings and titles",
+  },
+  {
+    key: "text",
+    label: "Text",
+    description: "Normal paragraph text",
+  },
+  {
+    key: "accent",
+    label: "Accent",
+    description: "Icons, highlights and badges",
+  },
+  {
+    key: "buttonBackground",
+    label: "Button Background",
+    description: "Primary button background",
+  },
+  {
+    key: "buttonText",
+    label: "Button Text",
+    description: "Text inside buttons",
+  },
+  {
+    key: "cardBackground",
+    label: "Card Background",
+    description: "Cards inside this section",
+  },
+  {
+    key: "border",
+    label: "Border",
+    description: "Card and component borders",
+  },
 ];
 
 export function AdminTheme() {
@@ -34,21 +136,65 @@ export function AdminTheme() {
     resetTheme,
   } = useTheme();
 
-  const [draft, setDraft] =
-    useState(theme);
+  const [
+    draft,
+    setDraft,
+  ] = useState<ThemeConfig>(theme);
 
-  const [saved, setSaved] =
-    useState(false);
+  const [
+    selectedSection,
+    setSelectedSection,
+  ] = useState<SectionName>("hero");
 
-  const updateDraft = (
-    changes: Partial<typeof draft>,
+  const [
+    saved,
+    setSaved,
+  ] = useState(false);
+
+  /*
+   * Keep draft synchronized if theme
+   * changes from another browser tab.
+   */
+  useEffect(() => {
+    setDraft(theme);
+  }, [theme]);
+
+  /*
+   * Currently selected section colors.
+   */
+  const sectionColors =
+    draft.sections[selectedSection];
+
+  /*
+   * Update one section color.
+   */
+  const updateSectionColor = (
+    field: keyof SectionColors,
+    value: string,
   ) => {
-    setDraft({
-      ...draft,
-      ...changes,
-    });
+    setDraft(
+      (
+        previous: ThemeConfig,
+      ): ThemeConfig => ({
+        ...previous,
+
+        sections: {
+          ...previous.sections,
+
+          [selectedSection]: {
+            ...previous.sections[
+              selectedSection
+            ],
+            [field]: value,
+          },
+        },
+      }),
+    );
   };
 
+  /*
+   * Save complete theme.
+   */
   const save = () => {
     setTheme(draft);
 
@@ -59,26 +205,33 @@ export function AdminTheme() {
     }, 2000);
   };
 
+  /*
+   * Reset theme.
+   */
   const reset = () => {
     resetTheme();
-
-    setDraft({
-      color: "blue",
-      mode: "light",
-      borderRadius: "medium",
-    });
   };
 
-  const selectedColor =
-    themeColors[draft.color];
-
   return (
-    <div className="max-w-6xl">
-      {/* Header */}
+    <div className="max-w-7xl">
+      {/* =====================================================
+          HEADER
+          ===================================================== */}
 
       <div>
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+          <div
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-xl
+              bg-green-50
+              text-green-600
+            "
+          >
             <Palette size={22} />
           </div>
 
@@ -88,193 +241,314 @@ export function AdminTheme() {
             </h1>
 
             <p className="mt-1 text-sm text-gray-500">
-              Customize the look and feel of your
-              diagnostic platform.
+              Customize colors for every section of
+              your diagnostic platform.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Main */}
+      {/* =====================================================
+          MAIN
+          ===================================================== */}
 
-      <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_360px]">
-        {/* Settings */}
+      <div className="mt-7 grid gap-6 lg:grid-cols-[280px_1fr_320px]">
+        {/* ===================================================
+            SECTION LIST
+            =================================================== */}
 
-        <div className="space-y-6">
-          {/* Primary Color */}
-
-          <section className="rounded-2xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-gray-900">
-              Primary Color
+        <div>
+          <div className="rounded-2xl border border-gray-200 bg-white p-4">
+            <h2 className="px-2 text-sm font-bold text-gray-900">
+              Website Sections
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Choose the main color used throughout
-              the website.
+            <p className="px-2 pt-1 text-xs text-gray-500">
+              Select a section to customize.
             </p>
 
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {colorOptions.map(
-                (colorName) => {
-                  const color =
-                    themeColors[colorName];
-
+            <div className="mt-4 space-y-1.5">
+              {sectionOptions.map(
+                (section) => {
                   const selected =
-                    draft.color === colorName;
+                    selectedSection ===
+                    section.key;
+
+                  const colors =
+                    draft.sections[
+                      section.key
+                    ];
 
                   return (
                     <button
-                      key={colorName}
+                      key={section.key}
                       type="button"
                       onClick={() =>
-                        updateDraft({
-                          color: colorName,
-                        })
+                        setSelectedSection(
+                          section.key,
+                        )
                       }
-                      className={`relative rounded-xl border-2 p-4 text-left transition ${
-                        selected
-                          ? "border-gray-900 shadow-sm"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
+                      className={`
+                        w-full
+                        rounded-xl
+                        border
+                        p-3
+                        text-left
+                        transition
+                        ${
+                          selected
+                            ? "border-green-500 bg-green-50"
+                            : "border-transparent hover:border-gray-200 hover:bg-gray-50"
+                        }
+                      `}
                     >
-                      <div
-                        className="h-10 w-10 rounded-full"
-                        style={{
-                          backgroundColor:
-                            color.primary,
-                        }}
-                      />
-
-                      <p className="mt-3 text-sm font-bold text-gray-900">
-                        {color.name}
-                      </p>
-
-                      {selected && (
-                        <div
-                          className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full text-white"
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="
+                            h-9
+                            w-9
+                            shrink-0
+                            rounded-lg
+                            border
+                            border-gray-200
+                          "
                           style={{
                             backgroundColor:
-                              color.primary,
+                              colors.background,
                           }}
-                        >
-                          <Check size={14} />
+                        />
+
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className={`
+                              truncate
+                              text-sm
+                              font-bold
+                              ${
+                                selected
+                                  ? "text-green-700"
+                                  : "text-gray-900"
+                              }
+                            `}
+                          >
+                            {section.name}
+                          </p>
+
+                          <p className="mt-0.5 truncate text-[11px] text-gray-500">
+                            {section.description}
+                          </p>
                         </div>
-                      )}
+
+                        {selected && (
+                          <Check
+                            size={17}
+                            className="shrink-0 text-green-600"
+                          />
+                        )}
+                      </div>
                     </button>
                   );
                 },
               )}
             </div>
-          </section>
+          </div>
+        </div>
 
-          {/* Appearance */}
+        {/* ===================================================
+            COLOR SETTINGS
+            =================================================== */}
 
+        <div>
           <section className="rounded-2xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-gray-900">
-              Appearance
-            </h2>
+            {/* Section heading */}
 
-            <p className="mt-1 text-sm text-gray-500">
-              Select how the website surfaces should
-              appear.
-            </p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-gray-950">
+                  {
+                    sectionOptions.find(
+                      (item) =>
+                        item.key ===
+                        selectedSection,
+                    )?.name
+                  }
+                </h2>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <OptionCard
-                title="Light"
-                description="Clean white interface"
-                selected={
-                  draft.mode === "light"
-                }
-                onClick={() =>
-                  updateDraft({
-                    mode: "light",
-                  })
-                }
+                <p className="mt-1 text-sm text-gray-500">
+                  {
+                    sectionOptions.find(
+                      (item) =>
+                        item.key ===
+                        selectedSection,
+                    )?.description
+                  }
+                </p>
+              </div>
+
+              <div
+                className="h-10 w-10 shrink-0 rounded-xl border border-gray-200"
+                style={{
+                  backgroundColor:
+                    sectionColors.background,
+                }}
               />
+            </div>
 
-              <OptionCard
-                title="Soft"
-                description="Softer background surfaces"
-                selected={
-                  draft.mode === "soft"
-                }
-                onClick={() =>
-                  updateDraft({
-                    mode: "soft",
-                  })
-                }
-              />
+            {/* Color fields */}
+
+            <div className="mt-7 grid gap-4 sm:grid-cols-2">
+              {colorFields.map(
+                (field) => {
+                  const value =
+                    sectionColors[
+                      field.key
+                    ];
+
+                  return (
+                    <div
+                      key={field.key}
+                      className="
+                        rounded-xl
+                        border
+                        border-gray-200
+                        p-4
+                      "
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <label
+                            htmlFor={`color-${field.key}`}
+                            className="text-sm font-bold text-gray-900"
+                          >
+                            {field.label}
+                          </label>
+
+                          <p className="mt-1 text-xs text-gray-500">
+                            {field.description}
+                          </p>
+                        </div>
+
+                        {/* Color preview */}
+
+                        <span
+                          className="
+                            h-8
+                            w-8
+                            shrink-0
+                            rounded-lg
+                            border
+                            border-gray-200
+                          "
+                          style={{
+                            backgroundColor:
+                              value,
+                          }}
+                        />
+                      </div>
+
+                      <div className="mt-4 flex gap-2">
+                        {/* Color picker */}
+
+                        <input
+                          id={`color-${field.key}`}
+                          type="color"
+                          value={
+                            isValidHexColor(
+                              value,
+                            )
+                              ? value
+                              : "#ffffff"
+                          }
+                          onChange={(event) =>
+                            updateSectionColor(
+                              field.key,
+                              event.target.value,
+                            )
+                          }
+                          className="
+                            h-10
+                            w-12
+                            cursor-pointer
+                            rounded-lg
+                            border
+                            border-gray-300
+                            bg-white
+                            p-1
+                          "
+                        />
+
+                        {/* Hex input */}
+
+                        <input
+                          type="text"
+                          value={value}
+                          onChange={(event) =>
+                            updateSectionColor(
+                              field.key,
+                              event.target.value,
+                            )
+                          }
+                          placeholder="#ffffff"
+                          className="
+                            h-10
+                            flex-1
+                            rounded-lg
+                            border
+                            border-gray-300
+                            px-3
+                            font-mono
+                            text-sm
+                            text-gray-900
+                            outline-none
+                            focus:border-green-500
+                            focus:ring-2
+                            focus:ring-green-100
+                          "
+                        />
+                      </div>
+                    </div>
+                  );
+                },
+              )}
+            </div>
+
+            {/* Reset section */}
+
+            <div className="mt-6 rounded-xl bg-gray-50 p-4">
+              <p className="text-xs font-semibold text-gray-700">
+                Section customization
+              </p>
+
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                Changes are applied to this section
+                only. Other sections will not be
+                affected.
+              </p>
             </div>
           </section>
 
-          {/* Radius */}
+          {/* =================================================
+              ACTIONS
+              ================================================= */}
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-bold text-gray-900">
-              Corner Style
-            </h2>
-
-            <p className="mt-1 text-sm text-gray-500">
-              Control how rounded cards and buttons
-              should appear.
-            </p>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <OptionCard
-                title="Small"
-                description="Compact corners"
-                selected={
-                  draft.borderRadius ===
-                  "small"
-                }
-                onClick={() =>
-                  updateDraft({
-                    borderRadius:
-                      "small",
-                  })
-                }
-              />
-
-              <OptionCard
-                title="Medium"
-                description="Balanced corners"
-                selected={
-                  draft.borderRadius ===
-                  "medium"
-                }
-                onClick={() =>
-                  updateDraft({
-                    borderRadius:
-                      "medium",
-                  })
-                }
-              />
-
-              <OptionCard
-                title="Large"
-                description="Soft modern corners"
-                selected={
-                  draft.borderRadius ===
-                  "large"
-                }
-                onClick={() =>
-                  updateDraft({
-                    borderRadius:
-                      "large",
-                  })
-                }
-              />
-            </div>
-          </section>
-
-          {/* Buttons */}
-
-          <div className="flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <button
               type="button"
               onClick={save}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                bg-green-600
+                px-5
+                py-3
+                text-sm
+                font-bold
+                text-white
+                transition
+                hover:bg-green-700
+              "
             >
               {saved ? (
                 <Check size={18} />
@@ -290,15 +564,33 @@ export function AdminTheme() {
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                border
+                border-gray-300
+                bg-white
+                px-5
+                py-3
+                text-sm
+                font-bold
+                text-gray-700
+                transition
+                hover:bg-gray-50
+              "
             >
               <RotateCcw size={17} />
-              Reset
+
+              Reset All
             </button>
           </div>
         </div>
 
-        {/* Preview */}
+        {/* ===================================================
+            LIVE PREVIEW
+            =================================================== */}
 
         <div>
           <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-5">
@@ -307,101 +599,185 @@ export function AdminTheme() {
             </p>
 
             <p className="mt-1 text-xs text-gray-500">
-              Preview of the selected appearance.
+              Preview of the selected section colors.
             </p>
 
-            <div className="mt-5 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50">
+            {/* Preview */}
+
+            <div
+              className="mt-5 overflow-hidden rounded-2xl border"
+              style={{
+                backgroundColor:
+                  sectionColors.background,
+                borderColor:
+                  sectionColors.border,
+              }}
+            >
+              {/* Header */}
+
               <div
-                className="p-5 text-white"
+                className="p-5"
                 style={{
                   backgroundColor:
-                    selectedColor.primary,
+                    sectionColors.background,
                 }}
               >
-                <p className="text-xs font-semibold opacity-80">
-                  Diagnostic Platform
-                </p>
+                <span
+                  className="inline-flex rounded-full px-3 py-1 text-[10px] font-bold"
+                  style={{
+                    backgroundColor:
+                      sectionColors.accent,
+                    color:
+                      sectionColors.buttonText,
+                  }}
+                >
+                  SECTION PREVIEW
+                </span>
 
-                <h3 className="mt-2 text-xl font-bold">
+                <h3
+                  className="mt-3 text-xl font-bold"
+                  style={{
+                    color:
+                      sectionColors.heading,
+                  }}
+                >
                   Better health starts here
                 </h3>
 
-                <p className="mt-2 text-xs leading-5 opacity-90">
-                  Book trusted diagnostic tests
-                  and health packages.
+                <p
+                  className="mt-2 text-sm leading-6"
+                  style={{
+                    color:
+                      sectionColors.text,
+                  }}
+                >
+                  Trusted diagnostic services
+                  designed around your needs.
                 </p>
+
+                <button
+                  type="button"
+                  className="mt-4 rounded-lg px-4 py-2.5 text-xs font-bold"
+                  style={{
+                    backgroundColor:
+                      sectionColors.buttonBackground,
+                    color:
+                      sectionColors.buttonText,
+                  }}
+                >
+                  Book Now
+                </button>
               </div>
 
-              <div className="space-y-3 p-4">
-                <div className="rounded-xl bg-white p-4 shadow-sm">
-                  <p className="text-xs font-semibold text-gray-500">
+              {/* Card */}
+
+              <div className="p-4">
+                <div
+                  className="rounded-xl border p-4"
+                  style={{
+                    backgroundColor:
+                      sectionColors.cardBackground,
+                    borderColor:
+                      sectionColors.border,
+                  }}
+                >
+                  <p
+                    className="text-xs font-semibold"
+                    style={{
+                      color:
+                        sectionColors.accent,
+                    }}
+                  >
                     Popular Test
                   </p>
 
-                  <p className="mt-1 font-bold text-gray-900">
+                  <p
+                    className="mt-2 font-bold"
+                    style={{
+                      color:
+                        sectionColors.heading,
+                    }}
+                  >
                     Complete Blood Count
                   </p>
 
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="font-bold text-gray-900">
+                  <p
+                    className="mt-2 text-xs leading-5"
+                    style={{
+                      color:
+                        sectionColors.text,
+                    }}
+                  >
+                    Comprehensive blood test for
+                    routine health screening.
+                  </p>
+
+                  <div className="mt-4 flex items-center justify-between">
+                    <span
+                      className="font-bold"
+                      style={{
+                        color:
+                          sectionColors.heading,
+                      }}
+                    >
                       ₹499
                     </span>
 
                     <button
                       type="button"
-                      className="rounded-lg px-3 py-2 text-xs font-bold text-white"
+                      className="rounded-lg px-3 py-2 text-xs font-bold"
                       style={{
                         backgroundColor:
-                          selectedColor.primary,
+                          sectionColors.buttonBackground,
+                        color:
+                          sectionColors.buttonText,
                       }}
                     >
-                      Book
+                      View
                     </button>
                   </div>
-                </div>
-
-                <div
-                  className="rounded-xl p-4"
-                  style={{
-                    backgroundColor:
-                      selectedColor.light,
-                  }}
-                >
-                  <p
-                    className="text-xs font-bold"
-                    style={{
-                      color:
-                        selectedColor.text,
-                    }}
-                  >
-                    Home Collection
-                  </p>
-
-                  <p className="mt-1 text-xs text-gray-600">
-                    Sample collection at your
-                    doorstep.
-                  </p>
                 </div>
               </div>
             </div>
 
+            {/* Selected Colors */}
+
             <div className="mt-5 rounded-xl bg-gray-50 p-4">
-              <p className="text-xs text-gray-500">
-                Selected theme
+              <p className="text-xs font-bold text-gray-700">
+                Selected Colors
               </p>
 
-              <div className="mt-2 flex items-center gap-2">
-                <span
-                  className="h-4 w-4 rounded-full"
-                  style={{
-                    backgroundColor:
-                      selectedColor.primary,
-                  }}
-                />
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                {colorFields.map(
+                  (field) => (
+                    <div
+                      key={field.key}
+                      title={field.label}
+                      className="text-center"
+                    >
+                      <div
+                        className="
+                          mx-auto
+                          h-7
+                          w-7
+                          rounded-lg
+                          border
+                          border-gray-200
+                        "
+                        style={{
+                          backgroundColor:
+                            sectionColors[
+                              field.key
+                            ],
+                        }}
+                      />
 
-                <span className="text-sm font-bold text-gray-900">
-                  {selectedColor.name}
-                </span>
+                      <p className="mt-1 truncate text-[9px] text-gray-500">
+                        {field.label}
+                      </p>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </div>
@@ -411,43 +787,12 @@ export function AdminTheme() {
   );
 }
 
-function OptionCard({
-  title,
-  description,
-  selected,
-  onClick,
-}: {
-  title: string;
-  description: string;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-xl border-2 p-4 text-left transition ${
-        selected
-          ? "border-blue-600 bg-blue-50"
-          : "border-gray-200 hover:border-gray-300"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-bold text-gray-900">
-          {title}
-        </span>
-
-        {selected && (
-          <Check
-            size={17}
-            className="text-blue-600"
-          />
-        )}
-      </div>
-
-      <p className="mt-1 text-xs text-gray-500">
-        {description}
-      </p>
-    </button>
-  );
+/*
+ * Validate HEX color before passing it
+ * to the native color picker.
+ */
+function isValidHexColor(
+  value: string,
+): boolean {
+  return /^#[0-9A-Fa-f]{6}$/.test(value);
 }

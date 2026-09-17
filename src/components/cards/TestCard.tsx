@@ -11,11 +11,31 @@ import { Link } from "react-router-dom";
 import type { DiagnosticTest } from "../../features/tests/testData";
 import { calculateDiscount } from "../../features/tests/testUtils";
 
+import {
+  defaultSectionColors,
+  type SectionColors,
+} from "../../features/theme/themeConfig";
+
 interface TestCardProps {
   test: DiagnosticTest;
+  themeColors?: SectionColors;
 }
 
-export function TestCard({ test }: TestCardProps) {
+export function TestCard({
+  test,
+  themeColors,
+}: TestCardProps) {
+  /*
+   * Use the colors configured for the section.
+   *
+   * Popular Tests passes:
+   * theme.sections.popularTests
+   *
+   * If no theme is supplied, use default colors.
+   */
+  const colors =
+    themeColors ?? defaultSectionColors;
+
   const discount = calculateDiscount(
     test.price,
     test.mrp,
@@ -32,34 +52,55 @@ export function TestCard({ test }: TestCardProps) {
         overflow-hidden
         rounded-2xl
         border
-        border-gray-200
         bg-white
         shadow-sm
         transition-all
         duration-300
         hover:-translate-y-1
-        hover:border-blue-200
         hover:shadow-xl
       "
+      style={{
+        backgroundColor:
+          colors.cardBackground,
+        borderColor:
+          colors.border,
+      }}
     >
       {/* =====================================================
           TOP BADGES
           ===================================================== */}
 
-      <div className="flex items-center justify-between gap-3 px-5 pt-5">
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+          gap-3
+          px-5
+          pt-5
+        "
+      >
+        {/* Category */}
+
         <span
           className="
             rounded-full
-            bg-blue-50
             px-3
             py-1.5
             text-xs
             font-bold
-            text-blue-700
           "
+          style={{
+            backgroundColor:
+              `${colors.accent}15`,
+            color:
+              colors.accent,
+          }}
         >
           {test.category}
         </span>
+
+        {/* Popular */}
 
         {test.popular && (
           <span
@@ -68,13 +109,17 @@ export function TestCard({ test }: TestCardProps) {
               items-center
               gap-1
               rounded-full
-              bg-amber-50
               px-3
               py-1.5
               text-xs
               font-bold
-              text-amber-700
             "
+            style={{
+              backgroundColor:
+                `${colors.accent}15`,
+              color:
+                colors.accent,
+            }}
           >
             <Star
               size={12}
@@ -90,8 +135,17 @@ export function TestCard({ test }: TestCardProps) {
           CONTENT
           ===================================================== */}
 
-      <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        {/* Test name */}
+      <div
+        className="
+          flex
+          flex-1
+          flex-col
+          px-5
+          pb-5
+          pt-4
+        "
+      >
+        {/* Test Name */}
 
         <h3
           className="
@@ -99,10 +153,12 @@ export function TestCard({ test }: TestCardProps) {
             text-lg
             font-bold
             leading-6
-            text-gray-950
             transition-colors
-            group-hover:text-blue-700
           "
+          style={{
+            color:
+              colors.heading,
+          }}
         >
           {test.name}
         </h3>
@@ -116,8 +172,11 @@ export function TestCard({ test }: TestCardProps) {
             line-clamp-2
             text-sm
             leading-6
-            text-gray-600
           "
+          style={{
+            color:
+              colors.text,
+          }}
         >
           {test.shortDescription}
         </p>
@@ -126,10 +185,26 @@ export function TestCard({ test }: TestCardProps) {
             TEST INFORMATION
             ================================================= */}
 
-        <div className="mt-5 space-y-3">
-          {/* Report time */}
+        <div
+          className="
+            mt-5
+            space-y-3
+          "
+        >
+          {/* Report Time */}
 
-          <div className="flex items-center gap-2.5 text-sm text-gray-600">
+          <div
+            className="
+              flex
+              items-center
+              gap-2.5
+              text-sm
+            "
+            style={{
+              color:
+                colors.text,
+            }}
+          >
             <span
               className="
                 flex
@@ -139,18 +214,32 @@ export function TestCard({ test }: TestCardProps) {
                 items-center
                 justify-center
                 rounded-full
-                bg-blue-50
               "
+              style={{
+                backgroundColor:
+                  `${colors.accent}15`,
+              }}
             >
               <Clock3
                 size={15}
-                className="text-blue-600"
+                style={{
+                  color:
+                    colors.accent,
+                }}
               />
             </span>
 
             <span>
               Report in{" "}
-              <strong className="font-semibold text-gray-800">
+              <strong
+                className="
+                  font-semibold
+                "
+                style={{
+                  color:
+                    colors.heading,
+                }}
+              >
                 {test.reportTime}
               </strong>
             </span>
@@ -158,7 +247,18 @@ export function TestCard({ test }: TestCardProps) {
 
           {/* Sample */}
 
-          <div className="flex items-center gap-2.5 text-sm text-gray-600">
+          <div
+            className="
+              flex
+              items-center
+              gap-2.5
+              text-sm
+            "
+            style={{
+              color:
+                colors.text,
+            }}
+          >
             <span
               className="
                 flex
@@ -168,27 +268,52 @@ export function TestCard({ test }: TestCardProps) {
                 items-center
                 justify-center
                 rounded-full
-                bg-blue-50
               "
+              style={{
+                backgroundColor:
+                  `${colors.accent}15`,
+              }}
             >
               <Droplets
                 size={15}
-                className="text-blue-600"
+                style={{
+                  color:
+                    colors.accent,
+                }}
               />
             </span>
 
             <span>
               Sample:{" "}
-              <strong className="font-semibold text-gray-800">
+              <strong
+                className="
+                  font-semibold
+                "
+                style={{
+                  color:
+                    colors.heading,
+                }}
+              >
                 {test.sampleType}
               </strong>
             </span>
           </div>
 
-          {/* Home collection */}
+          {/* Home Collection */}
 
           {test.homeCollection && (
-            <div className="flex items-center gap-2.5 text-sm text-gray-600">
+            <div
+              className="
+                flex
+                items-center
+                gap-2.5
+                text-sm
+              "
+              style={{
+                color:
+                  colors.text,
+              }}
+            >
               <span
                 className="
                   flex
@@ -198,16 +323,30 @@ export function TestCard({ test }: TestCardProps) {
                   items-center
                   justify-center
                   rounded-full
-                  bg-green-50
                 "
+                style={{
+                  backgroundColor:
+                    `${colors.accent}15`,
+                }}
               >
                 <Home
                   size={15}
-                  className="text-green-600"
+                  style={{
+                    color:
+                      colors.accent,
+                  }}
                 />
               </span>
 
-              <span className="font-medium text-gray-700">
+              <span
+                className="
+                  font-medium
+                "
+                style={{
+                  color:
+                    colors.text,
+                }}
+              >
                 Home collection available
               </span>
             </div>
@@ -220,16 +359,22 @@ export function TestCard({ test }: TestCardProps) {
               className="
                 rounded-xl
                 border
-                border-amber-100
-                bg-amber-50
                 px-3
                 py-2.5
                 text-xs
                 font-semibold
-                text-amber-700
               "
+              style={{
+                borderColor:
+                  `${colors.accent}30`,
+                backgroundColor:
+                  `${colors.accent}10`,
+                color:
+                  colors.accent,
+              }}
             >
-              Fasting required before sample collection
+              Fasting required before sample
+              collection
             </div>
           )}
         </div>
@@ -238,29 +383,76 @@ export function TestCard({ test }: TestCardProps) {
             PRICE
             ================================================= */}
 
-        <div className="mt-auto pt-6">
-          <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
-            <span className="text-2xl font-extrabold text-gray-950">
-              ₹{test.price.toLocaleString("en-IN")}
+        <div
+          className="
+            mt-auto
+            pt-6
+          "
+        >
+          <div
+            className="
+              flex
+              flex-wrap
+              items-end
+              gap-x-2
+              gap-y-1
+            "
+          >
+            {/* Current Price */}
+
+            <span
+              className="
+                text-2xl
+                font-extrabold
+              "
+              style={{
+                color:
+                  colors.heading,
+              }}
+            >
+              ₹
+              {test.price.toLocaleString(
+                "en-IN",
+              )}
             </span>
 
+            {/* MRP */}
+
             {test.mrp > test.price && (
-              <span className="text-sm text-gray-400 line-through">
-                ₹{test.mrp.toLocaleString("en-IN")}
+              <span
+                className="
+                  text-sm
+                  line-through
+                "
+                style={{
+                  color:
+                    `${colors.text}80`,
+                }}
+              >
+                ₹
+                {test.mrp.toLocaleString(
+                  "en-IN",
+                )}
               </span>
             )}
+
+            {/* Discount */}
 
             {discount > 0 && (
               <span
                 className="
                   rounded-md
-                  bg-green-50
                   px-2
                   py-1
                   text-[11px]
                   font-bold
-                  text-green-700
                 "
+                style={{
+                  backgroundColor:
+                    `${colors.accent}15`,
+                  color:
+                    colors.accent,
+                }}
               >
                 {discount}% OFF
               </span>
@@ -281,7 +473,6 @@ export function TestCard({ test }: TestCardProps) {
               justify-center
               gap-2
               rounded-xl
-              bg-blue-600
               px-4
               py-3
               text-sm
@@ -290,9 +481,14 @@ export function TestCard({ test }: TestCardProps) {
               shadow-sm
               transition-all
               duration-200
-              hover:bg-blue-700
               hover:shadow-md
             "
+            style={{
+              backgroundColor:
+                colors.buttonBackground,
+              color:
+                colors.buttonText,
+            }}
           >
             View Test
 

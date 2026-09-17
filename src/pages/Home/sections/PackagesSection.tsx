@@ -20,6 +20,8 @@ import {
   type PackagesContent,
 } from "../../../features/home/homeConfig";
 
+import { useTheme } from "../../../features/theme/useTheme";
+
 /* =========================================================
    PACKAGE DATA
    ========================================================= */
@@ -128,12 +130,24 @@ interface PackageRowProps {
   title: string;
   category: string;
   items: LifestylePackage[];
+
+  colors: {
+    background: string;
+    heading: string;
+    text: string;
+    accent: string;
+    buttonBackground: string;
+    buttonText: string;
+    cardBackground: string;
+    border: string;
+  };
 }
 
 function PackageRow({
   title,
   category,
   items,
+  colors,
 }: PackageRowProps) {
   const sliderRef =
     useRef<HTMLDivElement>(null);
@@ -168,7 +182,12 @@ function PackageRow({
           ================================================= */}
 
       <div className="mb-4 flex items-center justify-between gap-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-700 sm:text-base">
+        <h3
+          className="text-sm font-semibold uppercase tracking-wide sm:text-base"
+          style={{
+            color: colors.heading,
+          }}
+        >
           {title}
         </h3>
 
@@ -183,19 +202,20 @@ function PackageRow({
             gap-1
             rounded-md
             border
-            border-pink-500
             bg-white
             px-5
             py-1.5
             text-xs
             font-semibold
-            text-pink-600
             transition
-            hover:bg-pink-500
-            hover:text-white
           "
+          style={{
+            borderColor: colors.accent,
+            color: colors.accent,
+          }}
         >
           View All
+
           <ArrowRight size={13} />
         </Link>
       </div>
@@ -226,14 +246,16 @@ function PackageRow({
             justify-center
             rounded-full
             border
-            border-gray-200
-            bg-white
-            text-gray-700
             shadow-md
             transition
-            hover:bg-gray-50
             lg:flex
           "
+          style={{
+            borderColor: colors.border,
+            backgroundColor:
+              colors.cardBackground,
+            color: colors.accent,
+          }}
         >
           <ChevronLeft size={19} />
         </button>
@@ -268,7 +290,6 @@ function PackageRow({
                   snap-start
                   overflow-hidden
                   rounded-xl
-                  bg-gray-200
                   shadow-sm
                   transition-all
                   duration-300
@@ -278,6 +299,12 @@ function PackageRow({
                   lg:min-w-0
                   lg:flex-1
                 "
+                style={{
+                  backgroundColor:
+                    colors.cardBackground,
+                  borderColor:
+                    colors.border,
+                }}
               >
                 {/* Image */}
 
@@ -296,24 +323,28 @@ function PackageRow({
                     "
                   />
 
-                  {/* Overlay */}
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
-
                   {/* Package Name */}
 
                   <div className="absolute bottom-3 left-3 right-3">
                     <div
                       className="
                         rounded-full
-                        bg-white
                         px-3
                         py-1.5
                         text-center
                         shadow-md
                       "
+                      style={{
+                        backgroundColor:
+                          colors.cardBackground,
+                      }}
                     >
-                      <span className="text-xs font-semibold text-gray-800">
+                      <span
+                        className="text-xs font-semibold"
+                        style={{
+                          color: colors.heading,
+                        }}
+                      >
                         {item.name}
                       </span>
                     </div>
@@ -345,14 +376,16 @@ function PackageRow({
             justify-center
             rounded-full
             border
-            border-gray-200
-            bg-white
-            text-gray-700
             shadow-md
             transition
-            hover:bg-gray-50
             lg:flex
           "
+          style={{
+            borderColor: colors.border,
+            backgroundColor:
+              colors.cardBackground,
+            color: colors.accent,
+          }}
         >
           <ChevronRight size={19} />
         </button>
@@ -360,7 +393,12 @@ function PackageRow({
 
       {/* Mobile */}
 
-      <p className="mt-2 text-center text-[11px] text-gray-400 sm:hidden">
+      <p
+        className="mt-2 text-center text-[11px] sm:hidden"
+        style={{
+          color: colors.text,
+        }}
+      >
         Swipe to explore →
       </p>
     </div>
@@ -372,6 +410,19 @@ function PackageRow({
    ========================================================= */
 
 export function PackagesSection() {
+  /* =======================================================
+     THEME
+     ======================================================= */
+
+  const theme = useTheme();
+
+  const colors =
+    theme.sections.packages;
+
+  /* =======================================================
+     HOME PACKAGE CONTENT
+     ======================================================= */
+
   const [
     content,
     setContent,
@@ -385,7 +436,9 @@ export function PackagesSection() {
 
   useEffect(() => {
     const handleUpdate = () => {
-      setContent(getPackagesContent());
+      setContent(
+        getPackagesContent(),
+      );
     };
 
     window.addEventListener(
@@ -446,11 +499,12 @@ export function PackagesSection() {
 
   const configuredPackages =
     content.packageIds
-      .map((packageId: string) =>
-        lifestylePackages.find(
-          (item: LifestylePackage) =>
-            item.id === packageId,
-        ),
+      .map(
+        (packageId: string) =>
+          lifestylePackages.find(
+            (item: LifestylePackage) =>
+              item.id === packageId,
+          ),
       )
       .filter(
         (
@@ -483,7 +537,13 @@ export function PackagesSection() {
     );
 
   return (
-    <section className="bg-[#fff8f7] py-12 sm:py-14 lg:py-16">
+    <section
+      className="py-12 sm:py-14 lg:py-16"
+      style={{
+        backgroundColor:
+          colors.background,
+      }}
+    >
       <Container>
         {/* =================================================
             MAIN HEADER
@@ -494,24 +554,37 @@ export function PackagesSection() {
             className="
               inline-flex
               rounded-full
-              bg-blue-50
               px-4
               py-1
               text-[10px]
               font-bold
               uppercase
               tracking-widest
-              text-blue-600
             "
+            style={{
+              backgroundColor:
+                `${colors.accent}15`,
+              color: colors.accent,
+            }}
           >
             {content.badge}
           </span>
 
-          <h2 className="mt-3 text-2xl font-bold text-gray-950 sm:text-3xl">
+          <h2
+            className="mt-3 text-2xl font-bold sm:text-3xl"
+            style={{
+              color: colors.heading,
+            }}
+          >
             {content.title}
           </h2>
 
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-500">
+          <p
+            className="mx-auto mt-2 max-w-xl text-sm leading-6"
+            style={{
+              color: colors.text,
+            }}
+          >
             {content.description}
           </p>
         </div>
@@ -524,6 +597,7 @@ export function PackagesSection() {
           title="Men's Health"
           category="Men Health"
           items={menPackages}
+          colors={colors}
         />
 
         {/* =================================================
@@ -534,6 +608,7 @@ export function PackagesSection() {
           title="Women's Health"
           category="Women Health"
           items={womenPackages}
+          colors={colors}
         />
 
         {/* =================================================
@@ -544,6 +619,7 @@ export function PackagesSection() {
           title="Popular Health Packages"
           category="Diabetes"
           items={otherPackages}
+          colors={colors}
         />
 
         {/* =================================================
@@ -559,17 +635,18 @@ export function PackagesSection() {
               gap-2
               rounded-lg
               border
-              border-pink-500
-              bg-white
               px-8
               py-2.5
               text-sm
               font-bold
-              text-pink-600
               transition
-              hover:bg-pink-500
-              hover:text-white
             "
+            style={{
+              borderColor: colors.accent,
+              backgroundColor:
+                colors.buttonBackground,
+              color: colors.buttonText,
+            }}
           >
             {content.viewAllText}
 

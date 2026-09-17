@@ -13,12 +13,24 @@ import { Link } from "react-router-dom";
 
 import { Container } from "../../../components/common/Container";
 
+import { useTheme } from "../../../features/theme/useTheme";
+
 import {
   getHomeContent,
   type HeroSlide,
 } from "../../../features/home/homeConfig";
 
 export function HeroSliderSection() {
+  /*
+   * =========================================================
+   * THEME
+   * =========================================================
+   */
+
+  const theme = useTheme();
+
+  const colors = theme.sections.hero;
+
   /*
    * =========================================================
    * LOAD SLIDES FROM ADMIN CONFIG
@@ -52,9 +64,7 @@ export function HeroSliderSection() {
       setSlides(updatedSlides);
 
       setCurrentIndex((previous) => {
-        if (
-          updatedSlides.length === 0
-        ) {
+        if (updatedSlides.length === 0) {
           return 0;
         }
 
@@ -66,7 +76,7 @@ export function HeroSliderSection() {
     };
 
     /*
-     * Same-tab update.
+     * Same-tab update
      */
     window.addEventListener(
       "home-content-updated",
@@ -74,7 +84,7 @@ export function HeroSliderSection() {
     );
 
     /*
-     * Another-tab update.
+     * Another-tab update
      */
     const handleStorage = (
       event: StorageEvent,
@@ -117,9 +127,7 @@ export function HeroSliderSection() {
       return;
     }
 
-    if (
-      currentIndex >= slides.length
-    ) {
+    if (currentIndex >= slides.length) {
       setCurrentIndex(0);
     }
   }, [
@@ -200,9 +208,16 @@ export function HeroSliderSection() {
    */
 
   return (
-    <section className="bg-[#f6f8fb] py-4 sm:py-5 lg:py-6">
+    <section
+      className="py-4 sm:py-5 lg:py-6"
+      style={{
+        backgroundColor:
+          colors.background,
+      }}
+    >
       <Container>
         <div className="relative">
+
           {/* =================================================
               SLIDER
               ================================================= */}
@@ -218,11 +233,13 @@ export function HeroSliderSection() {
               shadow-sm
             "
           >
+
             {/* =================================================
                 IMAGE
                 ================================================= */}
 
             <div className="relative h-[300px] sm:h-[360px] md:h-[400px] lg:h-[440px]">
+
               <img
                 key={currentSlide.id}
                 src={currentSlide.image}
@@ -239,18 +256,23 @@ export function HeroSliderSection() {
               />
 
               {/* =================================================
-                  DARK OVERLAY
+                  IMAGE OVERLAY
+
+                  Uses existing theme colors.
+                  No colors.overlay required.
                   ================================================= */}
 
               <div
-                className="
-                  absolute
-                  inset-0
-                  bg-gradient-to-r
-                  from-black/70
-                  via-black/30
-                  to-transparent
-                "
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(
+                    to right,
+                    ${colors.background}F2 0%,
+                    ${colors.background}B8 38%,
+                    ${colors.background}35 65%,
+                    transparent 100%
+                  )`,
+                }}
               />
 
               {/* =================================================
@@ -268,13 +290,11 @@ export function HeroSliderSection() {
                   lg:px-14
                 "
               >
-                <div
-                  className="
-                    max-w-xl
-                    text-white
-                  "
-                >
-                  {/* Badge */}
+                <div className="max-w-xl">
+
+                  {/* =================================================
+                      BADGE
+                      ================================================= */}
 
                   {currentSlide.badge && (
                     <div
@@ -282,7 +302,6 @@ export function HeroSliderSection() {
                         mb-4
                         inline-flex
                         rounded-full
-                        bg-white/15
                         px-3
                         py-1.5
                         text-xs
@@ -290,12 +309,20 @@ export function HeroSliderSection() {
                         backdrop-blur-sm
                         sm:text-sm
                       "
+                      style={{
+                        backgroundColor:
+                          `${colors.accent}30`,
+                        color:
+                          colors.accent,
+                      }}
                     >
                       {currentSlide.badge}
                     </div>
                   )}
 
-                  {/* Title */}
+                  {/* =================================================
+                      TITLE
+                      ================================================= */}
 
                   <h1
                     className="
@@ -306,15 +333,28 @@ export function HeroSliderSection() {
                       sm:text-4xl
                       lg:text-5xl
                     "
+                    style={{
+                      color:
+                        colors.heading,
+                    }}
                   >
                     {currentSlide.title}{" "}
 
-                    <span className="text-blue-300">
-                      {currentSlide.highlight}
+                    <span
+                      style={{
+                        color:
+                          colors.accent,
+                      }}
+                    >
+                      {
+                        currentSlide.highlight
+                      }
                     </span>
                   </h1>
 
-                  {/* Description */}
+                  {/* =================================================
+                      DESCRIPTION
+                      ================================================= */}
 
                   <p
                     className="
@@ -322,18 +362,26 @@ export function HeroSliderSection() {
                       max-w-xl
                       text-sm
                       leading-6
-                      text-white/90
                       sm:text-base
                     "
+                    style={{
+                      color:
+                        colors.text,
+                    }}
                   >
                     {
                       currentSlide.description
                     }
                   </p>
 
-                  {/* Buttons */}
+                  {/* =================================================
+                      BUTTONS
+                      ================================================= */}
 
                   <div className="mt-6 flex flex-wrap gap-3">
+
+                    {/* Primary Button */}
+
                     <Link
                       to={
                         currentSlide.primaryButtonLink
@@ -343,15 +391,19 @@ export function HeroSliderSection() {
                         items-center
                         gap-2
                         rounded-xl
-                        bg-blue-600
                         px-5
                         py-3
                         text-sm
                         font-bold
-                        text-white
                         transition
-                        hover:bg-blue-700
+                        hover:opacity-90
                       "
+                      style={{
+                        backgroundColor:
+                          colors.buttonBackground,
+                        color:
+                          colors.buttonText,
+                      }}
                     >
                       {
                         currentSlide.primaryButtonText
@@ -361,6 +413,8 @@ export function HeroSliderSection() {
                         size={17}
                       />
                     </Link>
+
+                    {/* Secondary Button */}
 
                     {currentSlide
                       .secondaryButtonText && (
@@ -374,31 +428,36 @@ export function HeroSliderSection() {
                           gap-2
                           rounded-xl
                           border
-                          border-white/60
-                          bg-white/10
                           px-5
                           py-3
                           text-sm
                           font-bold
-                          text-white
                           backdrop-blur-sm
                           transition
-                          hover:bg-white
-                          hover:text-gray-900
+                          hover:opacity-90
                         "
+                        style={{
+                          borderColor:
+                            colors.border,
+                          color:
+                            colors.heading,
+                          backgroundColor:
+                            `${colors.cardBackground}CC`,
+                        }}
                       >
                         {
                           currentSlide.secondaryButtonText
                         }
                       </Link>
                     )}
+
                   </div>
                 </div>
               </div>
             </div>
 
             {/* =================================================
-                PREVIOUS
+                PREVIOUS BUTTON
                 ================================================= */}
 
             {slides.length > 1 && (
@@ -419,13 +478,17 @@ export function HeroSliderSection() {
                   justify-center
                   rounded-full
                   border
-                  border-gray-200
                   bg-white
-                  text-blue-600
                   shadow-md
                   transition
-                  hover:bg-blue-50
+                  hover:scale-105
                 "
+                style={{
+                  color:
+                    colors.accent,
+                  borderColor:
+                    colors.border,
+                }}
               >
                 <ChevronLeft
                   size={21}
@@ -434,7 +497,7 @@ export function HeroSliderSection() {
             )}
 
             {/* =================================================
-                NEXT
+                NEXT BUTTON
                 ================================================= */}
 
             {slides.length > 1 && (
@@ -455,13 +518,17 @@ export function HeroSliderSection() {
                   justify-center
                   rounded-full
                   border
-                  border-gray-200
                   bg-white
-                  text-blue-600
                   shadow-md
                   transition
-                  hover:bg-blue-50
+                  hover:scale-105
                 "
+                style={{
+                  color:
+                    colors.accent,
+                  borderColor:
+                    colors.border,
+                }}
               >
                 <ChevronRight
                   size={21}
@@ -499,17 +566,24 @@ export function HeroSliderSection() {
                           index,
                         )
                       }
-                      className={`
+                      className="
                         h-2.5
                         rounded-full
                         transition-all
-                        ${
+                      "
+                      style={{
+                        width:
                           index ===
                           currentIndex
-                            ? "w-8 bg-white"
-                            : "w-2.5 bg-white/50 hover:bg-white/80"
-                        }
-                      `}
+                            ? "32px"
+                            : "10px",
+
+                        backgroundColor:
+                          index ===
+                          currentIndex
+                            ? colors.accent
+                            : `${colors.buttonText}80`,
+                      }}
                     />
                   ),
                 )}

@@ -30,12 +30,26 @@ export interface DiagnosticCentre {
   timing: string;
 }
 
+/*
+ * ============================================================
+ * HEALTH ARTICLE
+ * ============================================================
+ */
+
+export type ArticleStatus =
+  | "ACTIVE"
+  | "DRAFT"
+  | "DISABLED";
+
 export interface Article {
   id: string;
+  slug: string;
   title: string;
   excerpt: string;
   category: string;
   readTime: string;
+  image: string;
+  status: ArticleStatus;
 }
 
 export const popularTests: DiagnosticTest[] = [
@@ -51,6 +65,7 @@ export const popularTests: DiagnosticTest[] = [
     sampleType: "Blood",
     homeCollection: true,
   },
+
   {
     id: "thyroid",
     name: "Thyroid Profile",
@@ -63,6 +78,7 @@ export const popularTests: DiagnosticTest[] = [
     sampleType: "Blood",
     homeCollection: true,
   },
+
   {
     id: "hba1c",
     name: "HbA1c",
@@ -75,6 +91,7 @@ export const popularTests: DiagnosticTest[] = [
     sampleType: "Blood",
     homeCollection: true,
   },
+
   {
     id: "vitamin-d",
     name: "Vitamin D",
@@ -100,6 +117,7 @@ export const healthPackages: HealthPackage[] = [
     mrp: 1500,
     homeCollection: true,
   },
+
   {
     id: "full-body",
     name: "Full Body Health Checkup",
@@ -111,6 +129,7 @@ export const healthPackages: HealthPackage[] = [
     popular: true,
     homeCollection: true,
   },
+
   {
     id: "senior-care",
     name: "Senior Citizen Health Package",
@@ -132,6 +151,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
     distance: "2.4 km",
     timing: "7:00 AM - 8:00 PM",
   },
+
   {
     id: "centre-2",
     name: "Diagnostic Platform - Aliganj",
@@ -140,6 +160,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
     distance: "4.1 km",
     timing: "7:00 AM - 8:00 PM",
   },
+
   {
     id: "centre-3",
     name: "Diagnostic Platform - Hazratganj",
@@ -150,51 +171,117 @@ export const diagnosticCentres: DiagnosticCentre[] = [
   },
 ];
 
+/*
+ * ============================================================
+ * HEALTH ARTICLES
+ * ============================================================
+ */
+
 export const articles: Article[] = [
   {
     id: "1",
-    title: "Why regular health checkups matter",
+    slug: "ultrasound-myths-vs-facts",
+    title: "Ultrasound: Myths vs Facts",
     excerpt:
-      "Understand how preventive testing can help identify health risks early.",
-    category: "Preventive Health",
+      "Learn the facts about ultrasound, including how it uses sound waves, why it does not use radiation, and its common diagnostic applications.",
+    category: "Ultrasound",
     readTime: "5 min read",
+    image: "/images/articles/ultrasound-myths-facts.jpeg",
+    status: "ACTIVE",
   },
+
   {
     id: "2",
-    title: "Understanding your blood test report",
+    slug: "what-is-elastography",
+    title: "What is Elastography?",
     excerpt:
-      "A simple guide to some of the most common values in a blood report.",
+      "Understand how elastography uses ultrasound technology to assess tissue stiffness and support the evaluation of suspicious lumps and conditions.",
     category: "Diagnostics",
-    readTime: "6 min read",
+    readTime: "5 min read",
+    image: "/images/articles/elastography.jpeg",
+    status: "ACTIVE",
   },
+
   {
     id: "3",
-    title: "How to prepare for a blood test",
+    slug: "neurosonogram-newborn-brain",
+    title: "Neurosonogram: Ultrasound of a Newborn's Brain",
     excerpt:
-      "Learn when fasting is required and what you should do before testing.",
-    category: "Patient Guide",
-    readTime: "4 min read",
+      "Learn how neurosonography provides a safe, painless ultrasound examination of a newborn baby's brain, particularly in premature babies.",
+    category: "Neonatal Imaging",
+    readTime: "6 min read",
+    image: "/images/articles/neurosonogram.jpeg",
+    status: "ACTIVE",
+  },
+
+  {
+    id: "4",
+    slug: "pregnancy-guide-important-ultrasound-scans",
+    title: "Pregnancy Guide: Important Ultrasound Scans",
+    excerpt:
+      "A practical pregnancy guide covering important stages, routine antenatal scans, early dating scans, anomaly scans, growth scans and Doppler assessment.",
+    category: "Pregnancy Care",
+    readTime: "7 min read",
+    image: "/images/articles/pregnancy-guide.jpeg",
+    status: "ACTIVE",
+  },
+
+  {
+    id: "5",
+    slug: "transvaginal-ultrasound-what-you-should-know",
+    title: "Transvaginal Ultrasound: What You Should Know",
+    excerpt:
+      "Understand what a transvaginal ultrasound is, why doctors recommend it, how the examination is performed, and what patients can expect.",
+    category: "Women's Health",
+    readTime: "6 min read",
+    image: "/images/articles/transvaginal-ultrasound.jpeg",
+    status: "ACTIVE",
+  },
+
+  {
+    id: "6",
+    slug: "specialized-pregnancy-womens-imaging-services",
+    title: "Specialized Pregnancy & Women's Imaging Services",
+    excerpt:
+      "Explore specialized ultrasound services including routine antenatal scans, early dating scans, NT-NB scans, TIFFA, anomaly scans, growth scans and Doppler studies.",
+    category: "Women's Imaging",
+    readTime: "5 min read",
+    image: "/images/articles/our-services.jpeg",
+    status: "ACTIVE",
   },
 ];
+
+/*
+ * ============================================================
+ * FAQ
+ * ============================================================
+ */
 
 export const faqs = [
   {
     question: "Can I book a diagnostic test from home?",
+
     answer:
       "Yes. You can select home sample collection during booking and choose an available date and time slot.",
   },
+
   {
     question: "How will I receive my report?",
+
     answer:
       "Once your report is finalized, you can access it through your account and download the digital report.",
   },
+
   {
     question: "Can I book tests for my family members?",
+
     answer:
       "Yes. The patient portal will allow you to maintain profiles for family members and book tests for them.",
   },
+
   {
     question: "Do all tests require fasting?",
+
     answer:
       "No. Fasting requirements depend on the specific test or package. The test details page will clearly indicate preparation requirements.",
   },
