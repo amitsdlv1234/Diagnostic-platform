@@ -36,6 +36,12 @@ const cards = [
     path: "/admin/home",
   },
   {
+    title: "Articles",
+    description: "Manage health articles",
+    icon: FileText,
+    path: "/admin/articles",
+  },
+  {
     title: "Offers & Banners",
     description: "Manage promotions",
     icon: Gift,
@@ -48,11 +54,11 @@ const cards = [
     path: "/admin/bookings",
   },
   {
-  title: "Theme & Appearance",
-  description: "Customize colours and website appearance",
-  icon: Palette,
-  path: "/admin/theme",
-},
+    title: "Theme & Appearance",
+    description: "Customize colours and website appearance",
+    icon: Palette,
+    path: "/admin/theme",
+  },
 ];
 
 export function AdminDashboard() {

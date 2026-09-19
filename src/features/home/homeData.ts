@@ -46,6 +46,7 @@ export interface Article {
   slug: string;
   title: string;
   excerpt: string;
+  content: string;
   category: string;
   readTime: string;
   image: string;
@@ -187,6 +188,8 @@ export const articles: Article[] = [
     category: "Ultrasound",
     readTime: "5 min read",
     image: "/images/articles/ultrasound-myths-facts.jpeg",
+    content:
+      "Ultrasound is a commonly used diagnostic imaging technique that uses high-frequency sound waves to create images of structures inside the body. Unlike X-rays and CT scans, ultrasound does not use ionizing radiation. It is commonly used for abdominal, pregnancy, vascular and other diagnostic examinations.",
     status: "ACTIVE",
   },
 
@@ -199,6 +202,8 @@ export const articles: Article[] = [
     category: "Diagnostics",
     readTime: "5 min read",
     image: "/images/articles/elastography.jpeg",
+    content:
+      "Elastography is an ultrasound-based imaging technique that evaluates the stiffness of tissues. It can provide additional information about tissues and may be used along with other diagnostic examinations.",
     status: "ACTIVE",
   },
 
@@ -211,6 +216,8 @@ export const articles: Article[] = [
     category: "Neonatal Imaging",
     readTime: "6 min read",
     image: "/images/articles/neurosonogram.jpeg",
+    content:
+      "A neurosonogram is an ultrasound examination of a newborn baby's brain. It is particularly useful in premature babies and can be performed safely through the fontanelle.",
     status: "ACTIVE",
   },
 
@@ -223,6 +230,8 @@ export const articles: Article[] = [
     category: "Pregnancy Care",
     readTime: "7 min read",
     image: "/images/articles/pregnancy-guide.jpeg",
+    content:
+      "Ultrasound examinations are an important part of antenatal care. Depending on the stage of pregnancy and clinical requirements, different scans may be recommended, including dating scans, anomaly scans, growth scans and Doppler assessments.",
     status: "ACTIVE",
   },
 
@@ -235,6 +244,8 @@ export const articles: Article[] = [
     category: "Women's Health",
     readTime: "6 min read",
     image: "/images/articles/transvaginal-ultrasound.jpeg",
+    content:
+      "A transvaginal ultrasound is an imaging examination used to evaluate structures within the pelvis. The examination uses an ultrasound probe designed for internal imaging and may be recommended for several gynecological and pregnancy-related evaluations.",
     status: "ACTIVE",
   },
 
@@ -247,6 +258,8 @@ export const articles: Article[] = [
     category: "Women's Imaging",
     readTime: "5 min read",
     image: "/images/articles/our-services.jpeg",
+    content:
+      "Specialized pregnancy and women's imaging services may include routine antenatal scans, early dating scans, NT-NB scans, TIFFA, anomaly scans, growth scans and Doppler studies. The appropriate examination depends on the pregnancy stage and clinical requirement.",
     status: "ACTIVE",
   },
 ];

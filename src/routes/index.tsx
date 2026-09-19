@@ -6,6 +6,10 @@ import {
 
 import { MainLayout } from "../components/layout/MainLayout";
 
+/* ============================================================
+   PUBLIC PAGES
+   ============================================================ */
+
 import { Home } from "../pages/Home/Home";
 
 import { Tests } from "../pages/Tests/Tests";
@@ -17,24 +21,49 @@ import { PackageDetails } from "../pages/Packages/PackageDetails";
 import { Centres } from "../pages/Centres/Centres";
 import { CentreDetails } from "../pages/Centres/CentreDetails";
 
-import { ProtectedRoute } from "../components/common/ProtectedRoute";
+/* ============================================================
+   AUTHENTICATION
+   ============================================================ */
 
 import { Login } from "../pages/Auth/Login";
 import { Register } from "../pages/Auth/Register";
 import { VerifyOtp } from "../pages/Auth/VerifyOtp";
+
+/* ============================================================
+   PATIENT
+   ============================================================ */
+
+import { ProtectedRoute } from "../components/common/ProtectedRoute";
 
 import { PatientLayout } from "../pages/Patient/PatientLayout";
 import { Profile } from "../pages/Patient/Profile";
 import { Bookings } from "../pages/Patient/Bookings";
 import { Reports } from "../pages/Patient/Reports";
 
+import { BookingDetails } from "../pages/Patient/BookingDetails";
+import { ReportDetails } from "../pages/Patient/ReportDetails";
+
+/* ============================================================
+   BOOKING
+   ============================================================ */
+
 import { Cart } from "../pages/Cart/Cart";
 
 import { Booking } from "../pages/Booking/Booking";
 import { BookingConfirmation } from "../pages/Booking/BookingConfirmation";
-import { BookingDetails } from "../pages/Patient/BookingDetails";
-import { ReportDetails } from "../pages/Patient/ReportDetails";
 import { Payment } from "../pages/Booking/Payment";
+
+/* ============================================================
+   ARTICLES - PUBLIC
+   ============================================================ */
+
+import { Blogs } from "../pages/Blogs/Blogs";
+import { ArticleDetails } from "../pages/Blogs/ArticleDetails";
+
+/* ============================================================
+   ADMIN
+   ============================================================ */
+
 import { AdminLayout } from "../pages/Admin/AdminLayout";
 import { AdminDashboard } from "../pages/Admin/AdminDashboard";
 import { AdminTests } from "../pages/Admin/AdminTests";
@@ -44,6 +73,17 @@ import { AdminHome } from "../pages/Admin/AdminHome";
 import { AdminOffers } from "../pages/Admin/AdminOffers";
 import { AdminBookings } from "../pages/Admin/AdminBookings";
 import { AdminTheme } from "../pages/Admin/AdminTheme";
+
+/* ============================================================
+   ADMIN - ARTICLES
+   ============================================================ */
+
+import { AdminArticles } from "../pages/Admin/Articles/AdminArticles";
+import { ArticleForm } from "../pages/Admin/Articles/ArticleForm";
+
+/* ============================================================
+   PLACEHOLDER
+   ============================================================ */
 
 function PlaceholderPage({
   title,
@@ -63,16 +103,26 @@ function PlaceholderPage({
   );
 }
 
+/* ============================================================
+   APP ROUTES
+   ============================================================ */
+
 export function AppRoutes() {
   return (
     <BrowserRouter>
+
       <Routes>
+
         {/* =====================================================
             PUBLIC WEBSITE
             ===================================================== */}
 
         <Route element={<MainLayout />}>
-          {/* Home */}
+
+          {/* =================================================
+              HOME
+              ================================================= */}
+
           <Route
             path="/"
             element={<Home />}
@@ -137,10 +187,6 @@ export function AppRoutes() {
               BOOKING
               ================================================= */}
 
-          {/* IMPORTANT:
-              Confirmation route is declared before /booking
-          */}
-
           <Route
             path="/booking/payment"
             element={<Payment />}
@@ -171,21 +217,14 @@ export function AppRoutes() {
 
           <Route
             path="/blogs"
-            element={
-              <PlaceholderPage
-                title="Health Articles"
-              />
-            }
+            element={<Blogs />}
           />
 
           <Route
-            path="/blogs/:articleId"
-            element={
-              <PlaceholderPage
-                title="Article"
-              />
-            }
+            path="/blogs/:slug"
+            element={<ArticleDetails />}
           />
+
         </Route>
 
         {/* =====================================================
@@ -212,10 +251,12 @@ export function AppRoutes() {
             ===================================================== */}
 
         <Route element={<ProtectedRoute />}>
+
           <Route
             path="/patient"
             element={<PatientLayout />}
           >
+
             <Route
               index
               element={<Profile />}
@@ -230,68 +271,137 @@ export function AppRoutes() {
               path="bookings"
               element={<Bookings />}
             />
+
             <Route
               path="bookings/:bookingId"
               element={<BookingDetails />}
             />
+
             <Route
               path="reports"
               element={<Reports />}
             />
+
             <Route
               path="reports/:reportId"
               element={<ReportDetails />}
             />
+
           </Route>
+
         </Route>
+
         {/* =====================================================
-    ADMIN AREA
-    ===================================================== */}
+            ADMIN AREA
+            ===================================================== */}
 
         <Route
           path="/admin"
           element={<AdminLayout />}
         >
+
+          {/* =================================================
+              DASHBOARD
+              ================================================= */}
+
           <Route
             index
             element={<AdminDashboard />}
           />
+
+          {/* =================================================
+              TESTS
+              ================================================= */}
 
           <Route
             path="tests"
             element={<AdminTests />}
           />
 
+          {/* =================================================
+              PACKAGES
+              ================================================= */}
+
           <Route
             path="packages"
             element={<AdminPackages />}
           />
+
+          {/* =================================================
+              CENTRES
+              ================================================= */}
 
           <Route
             path="centres"
             element={<AdminCentres />}
           />
 
+          {/* =================================================
+              HOME
+              ================================================= */}
+
           <Route
             path="home"
             element={<AdminHome />}
           />
+
+          {/* =================================================
+              OFFERS
+              ================================================= */}
 
           <Route
             path="offers"
             element={<AdminOffers />}
           />
 
+          {/* =================================================
+              BOOKINGS
+              ================================================= */}
+
           <Route
             path="bookings"
             element={<AdminBookings />}
           />
+
+          {/* =================================================
+              THEME
+              ================================================= */}
+
           <Route
             path="theme"
             element={<AdminTheme />}
           />
+
+          {/* =================================================
+              ARTICLES
+              ================================================= */}
+
+
+          {/* Article list */}
+
+          <Route
+            path="articles"
+            element={<AdminArticles />}
+          />
+
+          {/* Add article */}
+
+          <Route
+            path="articles/new"
+            element={<ArticleForm />}
+          />
+
+          {/* Edit article */}
+
+          <Route
+            path="articles/edit/:id"
+            element={<ArticleForm />}
+          />
+
         </Route>
+
       </Routes>
+
     </BrowserRouter>
   );
 }

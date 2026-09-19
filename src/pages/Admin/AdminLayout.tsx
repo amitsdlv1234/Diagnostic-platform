@@ -42,6 +42,11 @@ const links = [
     icon: Home,
   },
   {
+    to: "/admin/articles",
+    label: "Articles",
+    icon: FileText,
+  },
+  {
     to: "/admin/offers",
     label: "Offers & Banners",
     icon: Gift,
