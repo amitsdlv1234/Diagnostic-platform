@@ -84,6 +84,9 @@ import { ArticleForm } from "../pages/Admin/Articles/ArticleForm";
 /* ============================================================
    PLACEHOLDER
    ============================================================ */
+import {
+  ContactSettings,
+} from "../pages/Admin/ContactSettings";
 
 function PlaceholderPage({
   title,
@@ -370,6 +373,11 @@ export function AppRoutes() {
           <Route
             path="theme"
             element={<AdminTheme />}
+          />
+
+          <Route
+            path="contact"
+            element={<ContactSettings />}
           />
 
           {/* =================================================
