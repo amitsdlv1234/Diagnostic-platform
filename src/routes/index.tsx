@@ -87,6 +87,7 @@ import { ArticleForm } from "../pages/Admin/Articles/ArticleForm";
 import {
   ContactSettings,
 } from "../pages/Admin/ContactSettings";
+import DoctorProfile from "../pages/Doctor/DoctorProfile";
 
 function PlaceholderPage({
   title,
@@ -129,6 +130,15 @@ export function AppRoutes() {
           <Route
             path="/"
             element={<Home />}
+          />
+
+          {/* =================================================
+              Doctor Profile
+              ================================================= */}
+
+          <Route
+            path="/doctor"
+            element={<DoctorProfile/>}
           />
 
           {/* =================================================

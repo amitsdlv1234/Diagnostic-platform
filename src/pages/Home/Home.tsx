@@ -11,6 +11,7 @@ import { FaqSection } from "./sections/FaqSection";
 import { CtaSection } from "./sections/CtaSection";
 import { NeedHelpSection } from "./sections/NeedHelpSection";
 import { FloatingContactButtons } from "../../components/common/FloatingContactButtons";
+import { DoctorSection } from "./sections/DoctorSection";
 
 export function Home() {
     return (
@@ -37,6 +38,11 @@ export function Home() {
                 PACKAGES
                 ===================================================== */}
             <PackagesSection />
+
+            {/* =====================================================
+                Doctor
+                ===================================================== */}
+             <DoctorSection/>
 
             {/* =====================================================
                 HOME SAMPLE COLLECTION
