@@ -74,7 +74,7 @@ export function CollectionMethod({
           />
 
           <p className="mt-3 font-bold text-gray-900">
-            Visit Diagnostic Centre
+            Visit Nidan Diagnostic Centre
           </p>
 
           <p className="mt-1 text-sm leading-6 text-gray-500">

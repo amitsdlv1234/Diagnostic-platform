@@ -25,7 +25,7 @@ const cards = [
   },
   {
     title: "Centres",
-    description: "Manage diagnostic centres",
+    description: "Manage Nidan Diagnostic Centres",
     icon: Building2,
     path: "/admin/centres",
   },
@@ -70,7 +70,7 @@ export function AdminDashboard() {
         </h1>
 
         <p className="mt-1 text-sm text-gray-500">
-          Manage your diagnostic platform.
+          Manage your Nidan Diagnostic Centre.
         </p>
       </div>
 

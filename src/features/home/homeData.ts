@@ -146,7 +146,7 @@ export const healthPackages: HealthPackage[] = [
 export const diagnosticCentres: DiagnosticCentre[] = [
   {
     id: "centre-1",
-    name: "Diagnostic Platform - Gomti Nagar",
+    name: "Nidan Diagnostic Centre - Gomti Nagar",
     address: "Vibhuti Khand, Gomti Nagar",
     city: "Lucknow",
     distance: "2.4 km",
@@ -155,7 +155,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
   {
     id: "centre-2",
-    name: "Diagnostic Platform - Aliganj",
+    name: "Nidan Diagnostic Centre - Aliganj",
     address: "Sector K, Aliganj",
     city: "Lucknow",
     distance: "4.1 km",
@@ -164,7 +164,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
   {
     id: "centre-3",
-    name: "Diagnostic Platform - Hazratganj",
+    name: "Nidan Diagnostic Centre - Hazratganj",
     address: "Mahatma Gandhi Marg",
     city: "Lucknow",
     distance: "5.6 km",

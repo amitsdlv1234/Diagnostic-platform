@@ -33,7 +33,7 @@ const reports: DiagnosticReport[] = [
     testName: "Complete Blood Count (CBC)",
     reportDate: "2026-09-06",
     status: "FINAL",
-    centreName: "Diagnostic Centre - Lucknow",
+    centreName: "Nidan Diagnostic Centre - Lucknow",
   },
 ];
 

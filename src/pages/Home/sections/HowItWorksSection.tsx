@@ -20,7 +20,7 @@ const steps = [
     icon: CalendarCheck,
     title: "Schedule",
     description:
-      "Choose home collection or a nearby diagnostic centre.",
+      "Choose home collection or a nearby Nidan Diagnostic Centre.",
   },
   {
     number: "03",

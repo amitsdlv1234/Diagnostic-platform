@@ -156,7 +156,7 @@ export const defaultThemeConfig: ThemeConfig = {
 
     /*
      * ========================================================
-     * DIAGNOSTIC CENTRES
+     * Nidan Diagnostic CentreS
      * ========================================================
      */
     centres: {

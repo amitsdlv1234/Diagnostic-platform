@@ -15,7 +15,7 @@ export interface DiagnosticCentre {
   email?: string;
 
   centreType:
-    | "Diagnostic Centre"
+    | "Nidan Diagnostic Centre"
     | "Collection Centre"
     | "Hospital";
 
@@ -52,7 +52,7 @@ export const centreCities = [
 export const diagnosticCentres: DiagnosticCentre[] = [
   {
     id: "lucknow-hazratganj",
-    name: "Apollo Diagnostic Centre - Hazratganj",
+    name: "Apollo Nidan Diagnostic Centre - Hazratganj",
     slug: "apollo-diagnostic-centre-hazratganj",
 
     city: "Lucknow",
@@ -67,7 +67,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
     email: "support@example.com",
 
-    centreType: "Diagnostic Centre",
+    centreType: "Nidan Diagnostic Centre",
 
     openingTime: "07:00 AM",
     closingTime: "08:00 PM",
@@ -105,7 +105,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
   {
     id: "lucknow-gomti-nagar",
-    name: "Apollo Diagnostic Centre - Gomti Nagar",
+    name: "Apollo Nidan Diagnostic Centre - Gomti Nagar",
     slug: "apollo-diagnostic-centre-gomti-nagar",
 
     city: "Lucknow",
@@ -118,7 +118,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
     phone: "+91 90000 00002",
 
-    centreType: "Diagnostic Centre",
+    centreType: "Nidan Diagnostic Centre",
 
     openingTime: "06:30 AM",
     closingTime: "09:00 PM",
@@ -203,7 +203,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
   {
     id: "kanpur-swaroop-nagar",
-    name: "Apollo Diagnostic Centre - Swaroop Nagar",
+    name: "Apollo Nidan Diagnostic Centre - Swaroop Nagar",
     slug: "apollo-diagnostic-centre-swaroop-nagar",
 
     city: "Kanpur",
@@ -216,7 +216,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
     phone: "+91 90000 00004",
 
-    centreType: "Diagnostic Centre",
+    centreType: "Nidan Diagnostic Centre",
 
     openingTime: "07:00 AM",
     closingTime: "08:00 PM",
@@ -252,7 +252,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
   {
     id: "prayagraj-civil-lines",
-    name: "Apollo Diagnostic Centre - Civil Lines",
+    name: "Apollo Nidan Diagnostic Centre - Civil Lines",
     slug: "apollo-diagnostic-centre-civil-lines",
 
     city: "Prayagraj",
@@ -265,7 +265,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
     phone: "+91 90000 00005",
 
-    centreType: "Diagnostic Centre",
+    centreType: "Nidan Diagnostic Centre",
 
     openingTime: "07:00 AM",
     closingTime: "08:00 PM",
@@ -301,7 +301,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
   {
     id: "varanasi-lanka",
-    name: "Apollo Diagnostic Centre - Lanka",
+    name: "Apollo Nidan Diagnostic Centre - Lanka",
     slug: "apollo-diagnostic-centre-lanka",
 
     city: "Varanasi",
@@ -314,7 +314,7 @@ export const diagnosticCentres: DiagnosticCentre[] = [
 
     phone: "+91 90000 00006",
 
-    centreType: "Diagnostic Centre",
+    centreType: "Nidan Diagnostic Centre",
 
     openingTime: "06:30 AM",
     closingTime: "08:30 PM",

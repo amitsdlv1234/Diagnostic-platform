@@ -83,7 +83,7 @@ export function validateBooking(
     !values.centreId
   ) {
     errors.centreId =
-      "Please select a diagnostic centre";
+      "Please select a Nidan Diagnostic Centre";
   }
 
   if (

@@ -74,7 +74,7 @@ if (!state.schedule.timeSlot) {
   ) {
     if (!state.centreId) {
       errors.centreId =
-        "Please select a diagnostic centre";
+        "Please select a Nidan Diagnostic Centre";
     }
   }
 

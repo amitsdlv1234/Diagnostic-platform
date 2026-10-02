@@ -52,7 +52,7 @@ export function CentresSection() {
                 color: colors.heading,
               }}
             >
-              Find a diagnostic centre near you
+              Find a Nidan Diagnostic Centre near you
             </h2>
 
             {/* Description */}

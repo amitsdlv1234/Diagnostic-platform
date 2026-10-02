@@ -40,7 +40,7 @@ export function CentreDetails() {
         <Container>
           <EmptyState
             title="Centre not found"
-            description="The diagnostic centre you are looking for could not be found."
+            description="The Nidan Diagnostic Centre you are looking for could not be found."
             action={
               <Link
                 to="/centres"

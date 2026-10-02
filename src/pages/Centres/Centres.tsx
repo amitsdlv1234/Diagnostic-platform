@@ -89,15 +89,15 @@ export function Centres() {
             <div className="flex items-center gap-2 text-sm font-semibold text-blue-600">
               <MapPin size={17} />
 
-              Diagnostic Centres
+              Nidan Diagnostic Centres
             </div>
 
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-              Find a diagnostic centre near you
+              Find a Nidan Diagnostic Centre near you
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base">
-              Search diagnostic centres, check available
+              Search Nidan Diagnostic Centres, check available
               services and choose a convenient location
               for your tests and health packages.
             </p>
@@ -211,8 +211,8 @@ export function Centres() {
                 </div>
               ) : (
                 <EmptyState
-                  title="No diagnostic centres found"
-                  description="Try changing your search or filters to find a nearby diagnostic centre."
+                  title="No Nidan Diagnostic Centres found"
+                  description="Try changing your search or filters to find a nearby Nidan Diagnostic Centre."
                   action={
                     <button
                       type="button"

@@ -391,7 +391,7 @@ export function BookingDetails() {
           {!isHomeCollection && (
             <InfoCard
               icon={<MapPin size={19} />}
-              label="Diagnostic Centre"
+              label="Nidan Diagnostic Centre"
               value={
                 booking.centreName || "-"
               }

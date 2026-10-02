@@ -18,7 +18,7 @@ const defaultHomeContent: AdminHomeContent = {
     "Quality Diagnostic Tests, Made Simple",
 
   heroSubtitle:
-    "Book diagnostic tests and health packages from trusted diagnostic centres.",
+    "Book diagnostic tests and health packages from trusted Nidan Diagnostic Centres.",
 
   primaryButtonText:
     "Book a Test",

@@ -28,7 +28,7 @@ export const defaultHomeSlides: HomeSlide[] = [
     id: "slide-002",
     title: "Complete Health Checkups",
     subtitle:
-      "Take control of your health with preventive health packages from trusted diagnostic centres.",
+      "Take control of your health with preventive health packages from trusted Nidan Diagnostic Centres.",
     buttonText: "Explore Packages",
     buttonLink: "/packages",
     imageUrl:

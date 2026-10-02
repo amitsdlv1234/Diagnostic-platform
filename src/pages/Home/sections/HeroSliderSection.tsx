@@ -1,13 +1,6 @@
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 
@@ -40,16 +33,14 @@ export function HeroSliderSection() {
   const loadSlides = (): HeroSlide[] => {
     const content = getHomeContent();
 
-    return content.heroSlides.filter(
-      (slide) => slide.enabled,
-    );
+    return content.heroSlides.filter((slide) => slide.enabled);
   };
 
-  const [slides, setSlides] =
-    useState<HeroSlide[]>(loadSlides);
+  const [slides, setSlides] = useState<HeroSlide[]>(loadSlides);
 
-  const [currentIndex, setCurrentIndex] =
-    useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [isHovered, setIsHovered] = useState(false);
 
   /*
    * =========================================================
@@ -68,50 +59,30 @@ export function HeroSliderSection() {
           return 0;
         }
 
-        return Math.min(
-          previous,
-          updatedSlides.length - 1,
-        );
+        return Math.min(previous, updatedSlides.length - 1);
       });
     };
 
     /*
      * Same-tab update
      */
-    window.addEventListener(
-      "home-content-updated",
-      reloadSlides,
-    );
+    window.addEventListener("home-content-updated", reloadSlides);
 
     /*
      * Another-tab update
      */
-    const handleStorage = (
-      event: StorageEvent,
-    ) => {
-      if (
-        event.key ===
-        "diagnostic_home_content"
-      ) {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === "diagnostic_home_content") {
         reloadSlides();
       }
     };
 
-    window.addEventListener(
-      "storage",
-      handleStorage,
-    );
+    window.addEventListener("storage", handleStorage);
 
     return () => {
-      window.removeEventListener(
-        "home-content-updated",
-        reloadSlides,
-      );
+      window.removeEventListener("home-content-updated", reloadSlides);
 
-      window.removeEventListener(
-        "storage",
-        handleStorage,
-      );
+      window.removeEventListener("storage", handleStorage);
     };
   }, []);
 
@@ -130,10 +101,7 @@ export function HeroSliderSection() {
     if (currentIndex >= slides.length) {
       setCurrentIndex(0);
     }
-  }, [
-    currentIndex,
-    slides.length,
-  ]);
+  }, [currentIndex, slides.length]);
 
   /*
    * =========================================================
@@ -142,23 +110,18 @@ export function HeroSliderSection() {
    */
 
   useEffect(() => {
-    if (slides.length <= 1) {
+    if (slides.length <= 1 || isHovered) {
       return;
     }
 
-    const timer =
-      window.setInterval(() => {
-        setCurrentIndex(
-          (previous) =>
-            (previous + 1) %
-            slides.length,
-        );
-      }, 5000);
+    const timer = window.setInterval(() => {
+      setCurrentIndex((previous) => (previous + 1) % slides.length);
+    }, 5000);
 
     return () => {
       window.clearInterval(timer);
     };
-  }, [slides.length]);
+  }, [slides.length, isHovered]);
 
   /*
    * =========================================================
@@ -176,8 +139,7 @@ export function HeroSliderSection() {
    * =========================================================
    */
 
-  const currentSlide =
-    slides[currentIndex];
+  const currentSlide = slides[currentIndex];
 
   /*
    * =========================================================
@@ -187,18 +149,12 @@ export function HeroSliderSection() {
 
   const goPrevious = () => {
     setCurrentIndex((previous) =>
-      previous === 0
-        ? slides.length - 1
-        : previous - 1,
+      previous === 0 ? slides.length - 1 : previous - 1,
     );
   };
 
   const goNext = () => {
-    setCurrentIndex(
-      (previous) =>
-        (previous + 1) %
-        slides.length,
-    );
+    setCurrentIndex((previous) => (previous + 1) % slides.length);
   };
 
   /*
@@ -211,35 +167,33 @@ export function HeroSliderSection() {
     <section
       className="py-4 sm:py-5 lg:py-6"
       style={{
-        backgroundColor:
-          colors.background,
+        backgroundColor: colors.background,
       }}
     >
       <Container>
         <div className="relative">
-
           {/* =================================================
               SLIDER
               ================================================= */}
 
           <div
             className="
-              relative
-              mx-auto
-              w-full
-              max-w-[1205px]
-              overflow-hidden
-              rounded-[20px]
-              shadow-sm
-            "
+    relative
+    mx-auto
+    w-full
+    max-w-[1205px]
+    overflow-hidden
+    rounded-[20px]
+    shadow-sm
+  "
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-
             {/* =================================================
                 IMAGE
                 ================================================= */}
 
             <div className="relative h-[300px] sm:h-[360px] md:h-[400px] lg:h-[440px]">
-
               <img
                 key={currentSlide.id}
                 src={currentSlide.image}
@@ -291,7 +245,6 @@ export function HeroSliderSection() {
                 "
               >
                 <div className="max-w-xl">
-
                   {/* =================================================
                       BADGE
                       ================================================= */}
@@ -310,10 +263,8 @@ export function HeroSliderSection() {
                         sm:text-sm
                       "
                       style={{
-                        backgroundColor:
-                          `${colors.accent}30`,
-                        color:
-                          colors.accent,
+                        backgroundColor: `${colors.accent}30`,
+                        color: colors.accent,
                       }}
                     >
                       {currentSlide.badge}
@@ -334,21 +285,16 @@ export function HeroSliderSection() {
                       lg:text-5xl
                     "
                     style={{
-                      color:
-                        colors.heading,
+                      color: colors.heading,
                     }}
                   >
                     {currentSlide.title}{" "}
-
                     <span
                       style={{
-                        color:
-                          colors.accent,
+                        color: colors.accent,
                       }}
                     >
-                      {
-                        currentSlide.highlight
-                      }
+                      {currentSlide.highlight}
                     </span>
                   </h1>
 
@@ -365,13 +311,10 @@ export function HeroSliderSection() {
                       sm:text-base
                     "
                     style={{
-                      color:
-                        colors.text,
+                      color: colors.text,
                     }}
                   >
-                    {
-                      currentSlide.description
-                    }
+                    {currentSlide.description}
                   </p>
 
                   {/* =================================================
@@ -379,13 +322,10 @@ export function HeroSliderSection() {
                       ================================================= */}
 
                   <div className="mt-6 flex flex-wrap gap-3">
-
                     {/* Primary Button */}
 
                     <Link
-                      to={
-                        currentSlide.primaryButtonLink
-                      }
+                      to={currentSlide.primaryButtonLink}
                       className="
                         inline-flex
                         items-center
@@ -399,29 +339,20 @@ export function HeroSliderSection() {
                         hover:opacity-90
                       "
                       style={{
-                        backgroundColor:
-                          colors.buttonBackground,
-                        color:
-                          colors.buttonText,
+                        backgroundColor: colors.buttonBackground,
+                        color: colors.buttonText,
                       }}
                     >
-                      {
-                        currentSlide.primaryButtonText
-                      }
+                      {currentSlide.primaryButtonText}
 
-                      <ArrowRight
-                        size={17}
-                      />
+                      <ArrowRight size={17} />
                     </Link>
 
                     {/* Secondary Button */}
 
-                    {currentSlide
-                      .secondaryButtonText && (
+                    {currentSlide.secondaryButtonText && (
                       <Link
-                        to={
-                          currentSlide.secondaryButtonLink
-                        }
+                        to={currentSlide.secondaryButtonLink}
                         className="
                           inline-flex
                           items-center
@@ -437,20 +368,14 @@ export function HeroSliderSection() {
                           hover:opacity-90
                         "
                         style={{
-                          borderColor:
-                            colors.border,
-                          color:
-                            colors.heading,
-                          backgroundColor:
-                            `${colors.cardBackground}CC`,
+                          borderColor: colors.border,
+                          color: colors.heading,
+                          backgroundColor: `${colors.cardBackground}CC`,
                         }}
                       >
-                        {
-                          currentSlide.secondaryButtonText
-                        }
+                        {currentSlide.secondaryButtonText}
                       </Link>
                     )}
-
                   </div>
                 </div>
               </div>
@@ -484,15 +409,11 @@ export function HeroSliderSection() {
                   hover:scale-105
                 "
                 style={{
-                  color:
-                    colors.accent,
-                  borderColor:
-                    colors.border,
+                  color: colors.accent,
+                  borderColor: colors.border,
                 }}
               >
-                <ChevronLeft
-                  size={21}
-                />
+                <ChevronLeft size={21} />
               </button>
             )}
 
@@ -524,15 +445,11 @@ export function HeroSliderSection() {
                   hover:scale-105
                 "
                 style={{
-                  color:
-                    colors.accent,
-                  borderColor:
-                    colors.border,
+                  color: colors.accent,
+                  borderColor: colors.border,
                 }}
               >
-                <ChevronRight
-                  size={21}
-                />
+                <ChevronRight size={21} />
               </button>
             )}
 
@@ -553,40 +470,27 @@ export function HeroSliderSection() {
                   gap-2
                 "
               >
-                {slides.map(
-                  (slide, index) => (
-                    <button
-                      key={slide.id}
-                      type="button"
-                      aria-label={`Go to slide ${
-                        index + 1
-                      }`}
-                      onClick={() =>
-                        setCurrentIndex(
-                          index,
-                        )
-                      }
-                      className="
+                {slides.map((slide, index) => (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    aria-label={`Go to slide ${index + 1}`}
+                    onClick={() => setCurrentIndex(index)}
+                    className="
                         h-2.5
                         rounded-full
                         transition-all
                       "
-                      style={{
-                        width:
-                          index ===
-                          currentIndex
-                            ? "32px"
-                            : "10px",
+                    style={{
+                      width: index === currentIndex ? "32px" : "10px",
 
-                        backgroundColor:
-                          index ===
-                          currentIndex
-                            ? colors.accent
-                            : `${colors.buttonText}80`,
-                      }}
-                    />
-                  ),
-                )}
+                      backgroundColor:
+                        index === currentIndex
+                          ? colors.accent
+                          : `${colors.buttonText}80`,
+                    }}
+                  />
+                ))}
               </div>
             )}
           </div>

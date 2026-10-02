@@ -170,7 +170,7 @@ export function AppRoutes() {
           />
 
           {/* =================================================
-              DIAGNOSTIC CENTRES
+              Nidan Diagnostic CentreS
               ================================================= */}
 
           <Route

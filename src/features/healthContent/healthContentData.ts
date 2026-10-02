@@ -62,7 +62,7 @@ const initialHealthContents: HealthContent[] = [
     shortDescription:
       "Helpful information about pregnancy ultrasound examinations.",
     content:
-      "Pregnancy ultrasound examinations provide diagnostic imaging during pregnancy. Follow the instructions provided by your diagnostic centre.",
+      "Pregnancy ultrasound examinations provide diagnostic imaging during pregnancy. Follow the instructions provided by your Nidan Diagnostic Centre.",
     imageUrl:
       "/images/health-guides/pregnancy.jpg",
     category: "Pregnancy",

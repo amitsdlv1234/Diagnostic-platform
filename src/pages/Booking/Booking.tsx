@@ -499,7 +499,7 @@ export function Booking() {
                                                 {form.collectionType ===
                                                     "HOME_COLLECTION"
                                                     ? "Home Collection"
-                                                    : "Diagnostic Centre Visit"}
+                                                    : "Nidan Diagnostic Centre Visit"}
                                             </p>
 
                                             {form.collectionType ===

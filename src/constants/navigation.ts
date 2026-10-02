@@ -23,10 +23,6 @@ export const footerNavigation = {
       label: "Contact Us",
       href: "/contact",
     },
-    {
-      label: "Careers",
-      href: "/careers",
-    },
   ],
 
   support: [

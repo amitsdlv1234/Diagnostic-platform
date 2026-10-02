@@ -28,7 +28,7 @@ const demoReports: DiagnosticReport[] = [
     testName: "Complete Blood Count (CBC)",
     reportDate: "2026-09-06",
     status: "FINAL",
-    centreName: "Diagnostic Centre - Lucknow",
+    centreName: "Nidan Diagnostic Centre - Lucknow",
   },
 ];
 
@@ -120,7 +120,7 @@ export function ReportDetails() {
           />
 
           <Detail
-            label="Diagnostic Centre"
+            label="Nidan Diagnostic Centre"
             value={report.centreName}
           />
         </div>

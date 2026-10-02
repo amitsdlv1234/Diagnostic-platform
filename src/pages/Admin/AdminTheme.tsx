@@ -47,8 +47,8 @@ const sectionOptions: {
   },
   {
     key: "centres",
-    name: "Diagnostic Centres",
-    description: "Diagnostic centre section",
+    name: "Nidan Diagnostic Centres",
+    description: "Nidan Diagnostic Centre section",
   },
   {
     key: "whyChooseUs",
@@ -242,7 +242,7 @@ export function AdminTheme() {
 
             <p className="mt-1 text-sm text-gray-500">
               Customize colors for every section of
-              your diagnostic platform.
+              your Nidan Diagnostic Centre.
             </p>
           </div>
         </div>

@@ -215,7 +215,7 @@ export function BookingConfirmation() {
                 <p className="mt-1 text-sm font-bold text-gray-900">
                   {isHomeCollection
                     ? "Home Collection"
-                    : "Diagnostic Centre Visit"}
+                    : "Nidan Diagnostic Centre Visit"}
                 </p>
 
                 {!isHomeCollection &&

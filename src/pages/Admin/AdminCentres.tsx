@@ -25,7 +25,7 @@ const STORAGE_KEY =
 const defaults: Centre[] = [
   {
     id: "centre-001",
-    name: "Diagnostic Centre - Lucknow",
+    name: "Nidan Diagnostic Centre - Lucknow",
     address: "Hazratganj",
     city: "Lucknow",
     phone: "9876543210",
@@ -291,7 +291,7 @@ export function AdminCentres() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-950">
-            Diagnostic Centres
+            Nidan Diagnostic Centres
           </h1>
 
           <p className="mt-1 text-sm text-gray-500">
@@ -373,7 +373,7 @@ export function AdminCentres() {
                     name: value,
                   })
                 }
-                placeholder="Diagnostic Centre - Lucknow"
+                placeholder="Nidan Diagnostic Centre - Lucknow"
               />
 
               <Input
