@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
@@ -21,14 +22,11 @@ import {
 export function Login() {
   const navigate = useNavigate();
 
-  const [mobile, setMobile] =
-    useState("");
+  const [mobile, setMobile] = useState("");
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (
     event: React.FormEvent,
@@ -50,9 +48,7 @@ export function Login() {
     try {
       setLoading(true);
 
-      await requestLoginOtp(
-        cleanedMobile,
-      );
+      await requestLoginOtp(cleanedMobile);
 
       navigate(
         `/auth/verify-otp?mobile=${cleanedMobile}&mode=login`,
@@ -73,6 +69,8 @@ export function Login() {
       <Container>
         <div className="flex min-h-[calc(100vh-80px)] items-center justify-center py-10">
           <div className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+
+            {/* Icon */}
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
               <ShieldCheck
                 size={28}
@@ -80,6 +78,7 @@ export function Login() {
               />
             </div>
 
+            {/* Heading */}
             <div className="mt-5 text-center">
               <h1 className="text-2xl font-bold text-gray-950">
                 Welcome back
@@ -91,6 +90,7 @@ export function Login() {
               </p>
             </div>
 
+            {/* Login Form */}
             <form
               onSubmit={handleSubmit}
               className="mt-8 space-y-5"
@@ -129,6 +129,7 @@ export function Login() {
               </button>
             </form>
 
+            {/* Register */}
             <p className="mt-6 text-center text-sm text-gray-500">
               New patient?{" "}
               <Link
@@ -138,6 +139,18 @@ export function Login() {
                 Create an account
               </Link>
             </p>
+
+            {/* Back to Home */}
+            <div className="mt-5 border-t border-gray-100 pt-5">
+              <Link
+                to="/"
+                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+              >
+                <ArrowLeft size={17} />
+                Back to Home
+              </Link>
+            </div>
+
           </div>
         </div>
       </Container>

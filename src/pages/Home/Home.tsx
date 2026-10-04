@@ -2,7 +2,7 @@ import { HeroSliderSection } from "./sections/HeroSliderSection";
 import { PopularTestsSection } from "./sections/PopularTestsSection";
 import { PackagesSection } from "./sections/PackagesSection";
 import { HomeCollectionSection } from "./sections/HomeCollectionSection";
-import { CentresSection } from "./sections/CentresSection";
+// import { CentresSection } from "./sections/CentresSection";
 import { WhyChooseUsSection } from "./sections/WhyChooseUsSection";
 import { HowItWorksSection } from "./sections/HowItWorksSection";
 import { ArticlesSection } from "./sections/ArticlesSection";
@@ -12,86 +12,90 @@ import { CtaSection } from "./sections/CtaSection";
 import { NeedHelpSection } from "./sections/NeedHelpSection";
 import { FloatingContactButtons } from "../../components/common/FloatingContactButtons";
 import { DoctorSection } from "./sections/DoctorSection";
+import { VideoSection } from "./sections/VideoSection";
 
 export function Home() {
-    return (
-        <main>
-
-            {/* =====================================================
+  return (
+    <main>
+      {/* =====================================================
                 HERO SLIDER
                 Controlled from Admin → Home Page Management
                 ===================================================== */}
-            <HeroSliderSection />
+      <HeroSliderSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 NEED HELP
                 ===================================================== */}
-            <NeedHelpSection />
+      <NeedHelpSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 POPULAR TESTS
                 Controlled from Admin → Home Page Management
                 ===================================================== */}
-            <PopularTestsSection />
+      <PopularTestsSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 PACKAGES
                 ===================================================== */}
-            <PackagesSection />
+      <PackagesSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 Doctor
                 ===================================================== */}
-             <DoctorSection/>
+      <DoctorSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 HOME SAMPLE COLLECTION
                 ===================================================== */}
-            <HomeCollectionSection />
+      <HomeCollectionSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 CENTRES
                 ===================================================== */}
-            <CentresSection />
+      {/* <CentresSection /> */}
 
-            {/* =====================================================
+      {/* =====================================================
+           VIDEO
+         ===================================================== */}
+      <VideoSection />
+
+      {/* =====================================================
                 WHY CHOOSE US
                 ===================================================== */}
-            <WhyChooseUsSection />
+      <WhyChooseUsSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 HOW IT WORKS
                 ===================================================== */}
-            <HowItWorksSection />
+      <HowItWorksSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 ARTICLES
                 ===================================================== */}
-            <ArticlesSection />
+      <ArticlesSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 TESTIMONIALS
                 ===================================================== */}
-            <TestimonialsSection />
+      <TestimonialsSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 FAQ
                 ===================================================== */}
-            <FaqSection />
+      <FaqSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 CTA
                 ===================================================== */}
-            <CtaSection />
+      <CtaSection />
 
-            {/* =====================================================
+      {/* =====================================================
                 FLOATING CONTACT BUTTONS
                 Apollo-style:
                 - Prescription
                 - Call
                 ===================================================== */}
-            <FloatingContactButtons />
-
-        </main>
-    );
+      <FloatingContactButtons />
+    </main>
+  );
 }

@@ -8,9 +8,9 @@ export const mainNavigation = [
     href: "/packages",
   },
   {
-    label: "Centres",
-    href: "/centres",
-  },
+    label: "Reports",
+    href: "/patient/reports",
+  }
 ];
 
 export const footerNavigation = {
