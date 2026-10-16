@@ -9,12 +9,16 @@ import {
   Stethoscope,
   FileText,
   Palette,
+  BellRing,
 } from "lucide-react";
 
 import {
   NavLink,
   Outlet,
+  useNavigate,
 } from "react-router-dom";
+
+import { logoutAdmin }from "../../features/auth/adminAuthService";
 
 const links = [
   {
@@ -64,6 +68,11 @@ const links = [
     icon: Palette,
   },
   {
+    to: "/admin/notifications",
+    label: "Notification Popup",
+    icon: BellRing,
+  },
+  {
     to: "/admin/contact",
     label: "Contact Settings",
     icon: Phone,
@@ -71,13 +80,17 @@ const links = [
 ];
 
 export function AdminLayout() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logoutAdmin();
+    navigate("/admin/login", { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex min-h-screen">
-
-        {/* =====================================================
-            SIDEBAR
-            ===================================================== */}
+        {/* SIDEBAR */}
         <aside
           className="
             hidden
@@ -90,10 +103,7 @@ export function AdminLayout() {
             lg:flex-col
           "
         >
-
-          {/* ===================================================
-              ADMIN HEADER
-              =================================================== */}
+          {/* ADMIN HEADER */}
           <div className="border-b border-gray-100 p-5">
             <h1 className="text-xl font-bold text-gray-950">
               Diagnostic Admin
@@ -104,17 +114,8 @@ export function AdminLayout() {
             </p>
           </div>
 
-          {/* ===================================================
-              NAVIGATION
-              =================================================== */}
-          <nav
-            className="
-              flex-1
-              space-y-1
-              overflow-y-auto
-              p-3
-            "
-          >
+          {/* NAVIGATION */}
+          <nav className="flex-1 space-y-1 overflow-y-auto p-3">
             {links.map((link) => {
               const Icon = link.icon;
 
@@ -143,28 +144,17 @@ export function AdminLayout() {
                   }
                 >
                   <Icon size={18} />
-
-                  <span>
-                    {link.label}
-                  </span>
+                  <span>{link.label}</span>
                 </NavLink>
               );
             })}
           </nav>
 
-          {/* ===================================================
-              LOGOUT
-              =================================================== */}
-          <div
-            className="
-              mt-auto
-              border-t
-              border-gray-100
-              p-3
-            "
-          >
+          {/* LOGOUT */}
+          <div className="mt-auto border-t border-gray-100 p-3">
             <button
               type="button"
+              onClick={handleLogout}
               className="
                 flex
                 w-full
@@ -181,23 +171,14 @@ export function AdminLayout() {
               "
             >
               <LogOut size={18} />
-
-              <span>
-                Logout
-              </span>
+              <span>Logout</span>
             </button>
           </div>
-
         </aside>
 
-        {/* =====================================================
-            MAIN CONTENT
-            ===================================================== */}
+        {/* MAIN CONTENT */}
         <main className="min-w-0 flex-1">
-
-          {/* ===================================================
-              TOP HEADER
-              =================================================== */}
+          {/* TOP HEADER */}
           <div
             className="
               border-b
@@ -213,15 +194,11 @@ export function AdminLayout() {
             </div>
           </div>
 
-          {/* ===================================================
-              PAGE CONTENT
-              =================================================== */}
+          {/* PAGE CONTENT */}
           <div className="p-6 lg:p-8">
             <Outlet />
           </div>
-
         </main>
-
       </div>
     </div>
   );

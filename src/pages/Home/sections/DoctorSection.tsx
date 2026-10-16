@@ -50,7 +50,7 @@ export function DoctorSection() {
             </h2>
 
             <p className="mt-4 text-base font-medium uppercase tracking-wide text-gray-700">
-              Consultant Radiologist &amp; Founder
+              Consultant Radiologist
             </p>
 
             <p className="mt-1 text-sm text-gray-600">

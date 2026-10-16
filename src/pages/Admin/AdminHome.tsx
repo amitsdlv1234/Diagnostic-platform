@@ -9,7 +9,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
+import { uploadHeroImage } from "../../utils/cloudinaryUpload";
 
 import {
   defaultHomeContent,
@@ -1492,25 +1493,49 @@ function HeroSlideEditor({
 
   moveSlide: (
     index: number,
-    direction:
-      | "up"
-      | "down",
+    direction: "up" | "down",
   ) => void;
 
-  deleteSlide: (
-    id: string,
-  ) => void;
+  deleteSlide: (id: string) => void;
 }) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const handleImageUpload = async (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError("");
+
+    try {
+      const imageUrl = await uploadHeroImage(file);
+
+      updateSlide(slide.id, "image", imageUrl);
+    } catch (error) {
+      setUploadError(
+        error instanceof Error
+          ? error.message
+          : "Image upload failed.",
+      );
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
   return (
     <div
-      className={`rounded-2xl border ${slide.enabled
-        ? "border-gray-200"
-        : "border-gray-200 bg-gray-50"
-        }`}
+      className={`rounded-2xl border ${
+        slide.enabled
+          ? "border-gray-200"
+          : "border-gray-200 bg-gray-50"
+      }`}
     >
-      {/* =================================================
-          SLIDE HEADER
-          ================================================= */}
+      {/* SLIDE HEADER */}
 
       <div className="flex flex-col gap-4 border-b border-gray-100 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -1520,20 +1545,18 @@ function HeroSlideEditor({
             </span>
 
             <span
-              className={`rounded-full px-3 py-1 text-xs font-bold ${slide.enabled
-                ? "bg-green-50 text-green-700"
-                : "bg-gray-100 text-gray-500"
-                }`}
+              className={`rounded-full px-3 py-1 text-xs font-bold ${
+                slide.enabled
+                  ? "bg-green-50 text-green-700"
+                  : "bg-gray-100 text-gray-500"
+              }`}
             >
-              {slide.enabled
-                ? "Enabled"
-                : "Disabled"}
+              {slide.enabled ? "Enabled" : "Disabled"}
             </span>
           </div>
 
           <p className="mt-2 text-sm text-gray-500">
-            {slide.title}{" "}
-            {slide.highlight}
+            {slide.title} {slide.highlight}
           </p>
         </div>
 
@@ -1555,22 +1578,13 @@ function HeroSlideEditor({
               <Eye size={15} />
             )}
 
-            {slide.enabled
-              ? "Disable"
-              : "Enable"}
+            {slide.enabled ? "Disable" : "Enable"}
           </button>
 
           <button
             type="button"
-            disabled={
-              index === 0
-            }
-            onClick={() =>
-              moveSlide(
-                index,
-                "up",
-              )
-            }
+            disabled={index === 0}
+            onClick={() => moveSlide(index, "up")}
             className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30"
             aria-label="Move slide up"
           >
@@ -1579,16 +1593,8 @@ function HeroSlideEditor({
 
           <button
             type="button"
-            disabled={
-              index ===
-              total - 1
-            }
-            onClick={() =>
-              moveSlide(
-                index,
-                "down",
-              )
-            }
+            disabled={index === total - 1}
+            onClick={() => moveSlide(index, "down")}
             className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30"
             aria-label="Move slide down"
           >
@@ -1597,11 +1603,7 @@ function HeroSlideEditor({
 
           <button
             type="button"
-            onClick={() =>
-              deleteSlide(
-                slide.id,
-              )
-            }
+            onClick={() => deleteSlide(slide.id)}
             className="rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50"
             aria-label="Delete slide"
           >
@@ -1610,109 +1612,118 @@ function HeroSlideEditor({
         </div>
       </div>
 
-      {/* =================================================
-          SLIDE CONTENT
-          ================================================= */}
+      {/* SLIDE CONTENT */}
 
       <div className="grid gap-6 p-5 lg:grid-cols-[280px_1fr]">
+        {/* IMAGE UPLOAD AND PREVIEW */}
+
         <div>
           <label className="text-sm font-semibold text-gray-700">
             Image Preview
           </label>
 
           <div className="mt-2 aspect-video overflow-hidden rounded-xl bg-gray-100">
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="h-full w-full object-cover"
-              onError={(event) => {
-                event.currentTarget.style.display =
-                  "none";
-              }}
-            />
+            {slide.image ? (
+              <img
+                src={slide.image}
+                alt={slide.title || "Hero slide preview"}
+                className="h-full w-full object-cover"
+                onError={(event) => {
+                  event.currentTarget.style.display = "none";
+                }}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-gray-400">
+                No image selected
+              </div>
+            )}
           </div>
 
-          <div className="mt-4">
-            <Field
-              label="Image URL"
-              value={slide.image}
-              onChange={(value) =>
-                updateSlide(
-                  slide.id,
-                  "image",
-                  value,
-                )
-              }
+          <div className="mt-4 space-y-3">
+            <label className="block text-sm font-semibold text-gray-700">
+              Upload Hero Image
+            </label>
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleImageUpload}
+              disabled={uploading}
+              className="block w-full rounded-lg border border-gray-200 bg-white p-2 text-sm text-gray-700 file:mr-3 file:rounded-md file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
             />
+
+            <p className="text-xs text-gray-500">
+              Supported formats: JPG, PNG, WebP. Maximum size: 5 MB.
+            </p>
+
+            {uploading && (
+              <div className="flex items-center gap-2 text-sm text-blue-600">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                Uploading image to Cloudinary...
+              </div>
+            )}
+
+            {uploadError && (
+              <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+                {uploadError}
+              </p>
+            )}
+
+            {slide.image && (
+              <a
+                href={slide.image}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block text-sm font-medium text-blue-600 underline"
+              >
+                View uploaded image
+              </a>
+            )}
           </div>
         </div>
+
+        {/* TEXT AND BUTTON SETTINGS */}
 
         <div className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field
               label="Badge"
-              value={
-                slide.badge
-              }
+              value={slide.badge}
               onChange={(value) =>
-                updateSlide(
-                  slide.id,
-                  "badge",
-                  value,
-                )
+                updateSlide(slide.id, "badge", value)
               }
             />
 
             <Field
               label="Title"
-              value={
-                slide.title
-              }
+              value={slide.title}
               onChange={(value) =>
-                updateSlide(
-                  slide.id,
-                  "title",
-                  value,
-                )
+                updateSlide(slide.id, "title", value)
               }
             />
 
             <Field
               label="Highlight"
-              value={
-                slide.highlight
-              }
+              value={slide.highlight}
               onChange={(value) =>
-                updateSlide(
-                  slide.id,
-                  "highlight",
-                  value,
-                )
+                updateSlide(slide.id, "highlight", value)
               }
             />
           </div>
 
           <Field
             label="Description"
-            value={
-              slide.description
-            }
+            value={slide.description}
             textarea
             onChange={(value) =>
-              updateSlide(
-                slide.id,
-                "description",
-                value,
-              )
+              updateSlide(slide.id, "description", value)
             }
           />
 
           <div className="grid gap-5 sm:grid-cols-2">
             <Field
               label="Primary Button Text"
-              value={
-                slide.primaryButtonText
-              }
+              value={slide.primaryButtonText}
               onChange={(value) =>
                 updateSlide(
                   slide.id,
@@ -1724,9 +1735,7 @@ function HeroSlideEditor({
 
             <Field
               label="Primary Button Link"
-              value={
-                slide.primaryButtonLink
-              }
+              value={slide.primaryButtonLink}
               onChange={(value) =>
                 updateSlide(
                   slide.id,
@@ -1738,9 +1747,7 @@ function HeroSlideEditor({
 
             <Field
               label="Secondary Button Text"
-              value={
-                slide.secondaryButtonText
-              }
+              value={slide.secondaryButtonText}
               onChange={(value) =>
                 updateSlide(
                   slide.id,
@@ -1752,9 +1759,7 @@ function HeroSlideEditor({
 
             <Field
               label="Secondary Button Link"
-              value={
-                slide.secondaryButtonLink
-              }
+              value={slide.secondaryButtonLink}
               onChange={(value) =>
                 updateSlide(
                   slide.id,
@@ -1769,6 +1774,7 @@ function HeroSlideEditor({
     </div>
   );
 }
+
 
 /* =========================================================
    FIELD

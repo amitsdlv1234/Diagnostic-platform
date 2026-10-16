@@ -109,7 +109,7 @@ export function DoctorProfile() {
               </h1>
 
               <p className="mt-4 text-base font-medium uppercase tracking-wide text-gray-700">
-                Consultant Radiologist &amp; Founder
+                Consultant Radiologist
               </p>
 
               <div className="mt-5">
@@ -118,7 +118,7 @@ export function DoctorProfile() {
 
               <p className="mt-8 max-w-2xl text-[17px] leading-8 text-gray-600">
                 Dr. Sarita Yadav is a fetal and women&rsquo;s imaging
-                specialist and the founder of Nidan Diagnostic Centre in
+                specialist of Nidan Diagnostic Centre in
                 Ayodhya, which has served patients since 2000.
               </p>
 

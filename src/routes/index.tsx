@@ -1,3 +1,4 @@
+
 import {
   BrowserRouter,
   Route,
@@ -20,6 +21,8 @@ import { PackageDetails } from "../pages/Packages/PackageDetails";
 
 import { Centres } from "../pages/Centres/Centres";
 import { CentreDetails } from "../pages/Centres/CentreDetails";
+
+import DoctorProfile from "../pages/Doctor/DoctorProfile";
 
 /* ============================================================
    AUTHENTICATION
@@ -61,7 +64,14 @@ import { Blogs } from "../pages/Blogs/Blogs";
 import { ArticleDetails } from "../pages/Blogs/ArticleDetails";
 
 /* ============================================================
-   ADMIN
+   ADMIN AUTHENTICATION
+   ============================================================ */
+
+import { AdminLogin } from "../pages/Admin/AdminLogin";
+import { ProtectedAdminRoute } from "../components/common/ProtectedAdminRoute";
+
+/* ============================================================
+   ADMIN PAGES
    ============================================================ */
 
 import { AdminLayout } from "../pages/Admin/AdminLayout";
@@ -73,6 +83,8 @@ import { AdminHome } from "../pages/Admin/AdminHome";
 import { AdminOffers } from "../pages/Admin/AdminOffers";
 import { AdminBookings } from "../pages/Admin/AdminBookings";
 import { AdminTheme } from "../pages/Admin/AdminTheme";
+import { AdminNotifications } from "../pages/Admin/AdminNotifications";
+import { ContactSettings } from "../pages/Admin/ContactSettings";
 
 /* ============================================================
    ADMIN - ARTICLES
@@ -82,12 +94,8 @@ import { AdminArticles } from "../pages/Admin/Articles/AdminArticles";
 import { ArticleForm } from "../pages/Admin/Articles/ArticleForm";
 
 /* ============================================================
-   PLACEHOLDER
+   PLACEHOLDER PAGE
    ============================================================ */
-import {
-  ContactSettings,
-} from "../pages/Admin/ContactSettings";
-import DoctorProfile from "../pages/Doctor/DoctorProfile";
 
 function PlaceholderPage({
   title,
@@ -114,36 +122,27 @@ function PlaceholderPage({
 export function AppRoutes() {
   return (
     <BrowserRouter>
-
       <Routes>
-
         {/* =====================================================
             PUBLIC WEBSITE
             ===================================================== */}
 
         <Route element={<MainLayout />}>
-
-          {/* =================================================
-              HOME
-              ================================================= */}
+          {/* HOME */}
 
           <Route
             path="/"
             element={<Home />}
           />
 
-          {/* =================================================
-              Doctor Profile
-              ================================================= */}
+          {/* DOCTOR PROFILE */}
 
           <Route
             path="/doctor"
-            element={<DoctorProfile/>}
+            element={<DoctorProfile />}
           />
 
-          {/* =================================================
-              TESTS
-              ================================================= */}
+          {/* TESTS */}
 
           <Route
             path="/tests"
@@ -155,9 +154,7 @@ export function AppRoutes() {
             element={<TestDetails />}
           />
 
-          {/* =================================================
-              PACKAGES
-              ================================================= */}
+          {/* PACKAGES */}
 
           <Route
             path="/packages"
@@ -169,9 +166,7 @@ export function AppRoutes() {
             element={<PackageDetails />}
           />
 
-          {/* =================================================
-              Nidan Diagnostic CentreS
-              ================================================= */}
+          {/* DIAGNOSTIC CENTRES */}
 
           <Route
             path="/centres"
@@ -183,22 +178,16 @@ export function AppRoutes() {
             element={<CentreDetails />}
           />
 
-          {/* =================================================
-              HOME COLLECTION
-              ================================================= */}
+          {/* HOME COLLECTION */}
 
           <Route
             path="/home-collection"
             element={
-              <PlaceholderPage
-                title="Home Collection"
-              />
+              <PlaceholderPage title="Home Collection" />
             }
           />
 
-          {/* =================================================
-              BOOKING
-              ================================================= */}
+          {/* BOOKING */}
 
           <Route
             path="/booking/payment"
@@ -215,18 +204,14 @@ export function AppRoutes() {
             element={<Booking />}
           />
 
-          {/* =================================================
-              CART
-              ================================================= */}
+          {/* CART */}
 
           <Route
             path="/cart"
             element={<Cart />}
           />
 
-          {/* =================================================
-              ARTICLES
-              ================================================= */}
+          {/* ARTICLES */}
 
           <Route
             path="/blogs"
@@ -237,11 +222,10 @@ export function AppRoutes() {
             path="/blogs/:slug"
             element={<ArticleDetails />}
           />
-
         </Route>
 
         {/* =====================================================
-            AUTHENTICATION
+            PATIENT AUTHENTICATION
             ===================================================== */}
 
         <Route
@@ -264,12 +248,10 @@ export function AppRoutes() {
             ===================================================== */}
 
         <Route element={<ProtectedRoute />}>
-
           <Route
             path="/patient"
             element={<PatientLayout />}
           >
-
             <Route
               index
               element={<Profile />}
@@ -299,127 +281,118 @@ export function AppRoutes() {
               path="reports/:reportId"
               element={<ReportDetails />}
             />
-
           </Route>
-
         </Route>
 
         {/* =====================================================
-            ADMIN AREA
+            ADMIN LOGIN
+            Accessible without an existing admin session
             ===================================================== */}
 
         <Route
-          path="/admin"
-          element={<AdminLayout />}
-        >
+          path="/admin/login"
+          element={<AdminLogin />}
+        />
 
-          {/* =================================================
-              DASHBOARD
-              ================================================= */}
+        {/* =====================================================
+            PROTECTED ADMIN AREA
+            All admin pages require an admin session
+            ===================================================== */}
 
+        <Route element={<ProtectedAdminRoute />}>
           <Route
-            index
-            element={<AdminDashboard />}
-          />
+            path="/admin"
+            element={<AdminLayout />}
+          >
+            {/* DASHBOARD */}
 
-          {/* =================================================
-              TESTS
-              ================================================= */}
+            <Route
+              index
+              element={<AdminDashboard />}
+            />
 
-          <Route
-            path="tests"
-            element={<AdminTests />}
-          />
+            {/* TESTS */}
 
-          {/* =================================================
-              PACKAGES
-              ================================================= */}
+            <Route
+              path="tests"
+              element={<AdminTests />}
+            />
 
-          <Route
-            path="packages"
-            element={<AdminPackages />}
-          />
+            {/* PACKAGES */}
 
-          {/* =================================================
-              CENTRES
-              ================================================= */}
+            <Route
+              path="packages"
+              element={<AdminPackages />}
+            />
 
-          <Route
-            path="centres"
-            element={<AdminCentres />}
-          />
+            {/* CENTRES */}
 
-          {/* =================================================
-              HOME
-              ================================================= */}
+            <Route
+              path="centres"
+              element={<AdminCentres />}
+            />
 
-          <Route
-            path="home"
-            element={<AdminHome />}
-          />
+            {/* HOME PAGE MANAGEMENT */}
 
-          {/* =================================================
-              OFFERS
-              ================================================= */}
+            <Route
+              path="home"
+              element={<AdminHome />}
+            />
 
-          <Route
-            path="offers"
-            element={<AdminOffers />}
-          />
+            {/* OFFERS */}
 
-          {/* =================================================
-              BOOKINGS
-              ================================================= */}
+            <Route
+              path="offers"
+              element={<AdminOffers />}
+            />
 
-          <Route
-            path="bookings"
-            element={<AdminBookings />}
-          />
+            {/* BOOKINGS */}
 
-          {/* =================================================
-              THEME
-              ================================================= */}
+            <Route
+              path="bookings"
+              element={<AdminBookings />}
+            />
 
-          <Route
-            path="theme"
-            element={<AdminTheme />}
-          />
+            {/* THEME */}
 
-          <Route
-            path="contact"
-            element={<ContactSettings />}
-          />
+            <Route
+              path="theme"
+              element={<AdminTheme />}
+            />
 
-          {/* =================================================
-              ARTICLES
-              ================================================= */}
+            {/* NOTIFICATIONS */}
 
+            <Route
+              path="notifications"
+              element={<AdminNotifications />}
+            />
 
-          {/* Article list */}
+            {/* CONTACT SETTINGS */}
 
-          <Route
-            path="articles"
-            element={<AdminArticles />}
-          />
+            <Route
+              path="contact"
+              element={<ContactSettings />}
+            />
 
-          {/* Add article */}
+            {/* ARTICLES */}
 
-          <Route
-            path="articles/new"
-            element={<ArticleForm />}
-          />
+            <Route
+              path="articles"
+              element={<AdminArticles />}
+            />
 
-          {/* Edit article */}
+            <Route
+              path="articles/new"
+              element={<ArticleForm />}
+            />
 
-          <Route
-            path="articles/edit/:id"
-            element={<ArticleForm />}
-          />
-
+            <Route
+              path="articles/edit/:id"
+              element={<ArticleForm />}
+            />
+          </Route>
         </Route>
-
       </Routes>
-
     </BrowserRouter>
   );
 }
