@@ -11,11 +11,15 @@ import {
 import {
   ArrowLeft,
   Save,
+  Upload,
+  FileText,
 } from "lucide-react";
 
 import type {
   ArticleStatus,
 } from "../../../features/home/homeData";
+
+import { uploadArticleImage, uploadArticleFile } from "../../../utils/cloudinaryUpload";
 
 import {
   addArticle,
@@ -53,6 +57,9 @@ export function ArticleForm() {
 
   const [status, setStatus] =
     useState<ArticleStatus>("DRAFT");
+  const [attachmentUrl, setAttachmentUrl] = useState("");
+  const [attachmentName, setAttachmentName] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   /*
    * ============================================================
@@ -85,6 +92,8 @@ export function ArticleForm() {
     setCategory(article.category);
     setReadTime(article.readTime);
     setImage(article.image);
+    setAttachmentUrl(article.attachmentUrl || "");
+    setAttachmentName(article.attachmentName || "");
     setStatus(article.status);
   }, [id, navigate]);
 
@@ -184,6 +193,8 @@ export function ArticleForm() {
        * /images/articles/ultrasound-myths-facts.jpeg
        */
       image: image.trim(),
+      attachmentUrl: attachmentUrl.trim(),
+      attachmentName: attachmentName.trim(),
 
       status,
     };
@@ -467,6 +478,13 @@ export function ArticleForm() {
             Example:
             /images/articles/ultrasound-myths-facts.jpeg
           </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-pink-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-pink-800">
+              <Upload size={16} /> Upload image to Cloudinary
+              <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={uploading} onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; setUploading(true); try { setImage(await uploadArticleImage(file)); } catch (error) { alert(error instanceof Error ? error.message : "Image upload failed"); } finally { setUploading(false); event.target.value = ""; } }} />
+            </label>
+            {uploading && <span className="text-sm text-gray-500">Uploading…</span>}
+          </div>
 
           {/* IMAGE PREVIEW */}
 
@@ -497,6 +515,16 @@ export function ArticleForm() {
             </div>
           )}
 
+        </div>
+
+        <div className="mb-6 rounded-xl border border-dashed border-gray-300 p-4">
+          <label className="mb-2 block text-sm font-semibold text-gray-700">Optional article document (PDF, DOC, DOCX)</label>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+            <FileText size={16} /> {uploading ? "Uploading…" : "Upload article file"}
+            <input type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" disabled={uploading} onChange={async (event) => { const file = event.target.files?.[0]; if (!file) return; setUploading(true); try { setAttachmentUrl(await uploadArticleFile(file)); setAttachmentName(file.name); } catch (error) { alert(error instanceof Error ? error.message : "File upload failed"); } finally { setUploading(false); event.target.value = ""; } }} />
+          </label>
+          {attachmentUrl && <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-gray-50 p-3 text-sm"><a href={attachmentUrl} target="_blank" rel="noreferrer" className="break-all text-pink-700 underline">{attachmentName || "View uploaded document"}</a><button type="button" onClick={() => { setAttachmentUrl(""); setAttachmentName(""); }} className="text-red-600">Remove</button></div>}
+          <p className="mt-2 text-xs text-gray-500">Maximum file size: 10 MB. Configure the Cloudinary unsigned preset to allow raw file uploads.</p>
         </div>
 
         {/* ======================================================

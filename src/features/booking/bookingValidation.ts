@@ -40,11 +40,6 @@ export function validateBooking(
       "First name is required";
   }
 
-  if (!values.lastName.trim()) {
-    errors.lastName =
-      "Last name is required";
-  }
-
   if (!/^[6-9]\d{9}$/.test(values.mobile)) {
     errors.mobile =
       "Enter a valid 10-digit mobile number";
@@ -60,11 +55,6 @@ export function validateBooking(
   ) {
     errors.email =
       "Enter a valid email address";
-  }
-
-  if (!values.gender) {
-    errors.gender =
-      "Please select gender";
   }
 
   if (!values.serviceDate) {

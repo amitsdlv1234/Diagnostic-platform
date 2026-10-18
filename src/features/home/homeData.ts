@@ -50,6 +50,8 @@ export interface Article {
   category: string;
   readTime: string;
   image: string;
+  attachmentUrl?: string;
+  attachmentName?: string;
   status: ArticleStatus;
 }
 

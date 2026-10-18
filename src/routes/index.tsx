@@ -80,8 +80,11 @@ import { AdminTests } from "../pages/Admin/AdminTests";
 import { AdminPackages } from "../pages/Admin/AdminPackages";
 import { AdminCentres } from "../pages/Admin/AdminCentres";
 import { AdminHome } from "../pages/Admin/AdminHome";
+import { AdminDoctors } from "../pages/Admin/AdminDoctors";
+import { AdminVideos } from "../pages/Admin/AdminVideos";
 import { AdminOffers } from "../pages/Admin/AdminOffers";
 import { AdminBookings } from "../pages/Admin/AdminBookings";
+import { AdminReports } from "../pages/Admin/AdminReports";
 import { AdminTheme } from "../pages/Admin/AdminTheme";
 import { AdminNotifications } from "../pages/Admin/AdminNotifications";
 import { ContactSettings } from "../pages/Admin/ContactSettings";
@@ -332,6 +335,10 @@ export function AppRoutes() {
               element={<AdminCentres />}
             />
 
+            {/* DOCTOR SECTION MANAGEMENT */}
+
+            <Route path="doctors" element={<AdminDoctors />} />
+
             {/* HOME PAGE MANAGEMENT */}
 
             <Route
@@ -339,12 +346,18 @@ export function AppRoutes() {
               element={<AdminHome />}
             />
 
+            {/* VIDEO SECTION */}
+            <Route path="videos" element={<AdminVideos />} />
+
             {/* OFFERS */}
 
             <Route
               path="offers"
               element={<AdminOffers />}
             />
+
+            {/* PATIENT REPORT MANAGEMENT */}
+            <Route path="reports" element={<AdminReports />} />
 
             {/* BOOKINGS */}
 

@@ -162,3 +162,14 @@ a {
 [data-theme-mode="soft"] body {
   background-color: #f8fafc;
 }
+
+@media print {
+  @page { size: A4; margin: 14mm; }
+  body { background: #fff !important; min-width: 0 !important; }
+  body * { visibility: hidden; }
+  #booking-invoice, #booking-invoice * { visibility: visible; }
+  #booking-invoice { position: absolute; inset: 0 auto auto 0; width: 100%; max-width: none; padding: 0 !important; margin: 0 !important; }
+  #booking-invoice a { color: inherit !important; text-decoration: none !important; }
+  #booking-invoice .print\:hidden { display: none !important; }
+  #booking-invoice .rounded-3xl, #booking-invoice .rounded-2xl { break-inside: avoid; }
+}

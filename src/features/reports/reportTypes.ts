@@ -26,5 +26,7 @@ export interface DiagnosticReport {
 
   fileName?: string;
 
+  fileUrl?: string;
+
   createdAt: string;
 }

@@ -76,6 +76,7 @@ export function saveReport(
     REPORTS_STORAGE_KEY,
     JSON.stringify(reports),
   );
+  window.dispatchEvent(new Event("diagnostic-reports-updated"));
 }
 
 /**

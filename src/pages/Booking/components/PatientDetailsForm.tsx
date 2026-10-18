@@ -44,32 +44,23 @@ export function PatientDetailsForm({
 
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
         <Field
-          label="First name"
+          label="Patient name"
           required
-          value={patient.firstName}
-          onChange={handleChange(
-            "firstName",
-          )}
-          placeholder="Enter first name"
-        />
-
-        <Field
-          label="Last name"
-          required
-          value={patient.lastName}
-          onChange={handleChange(
-            "lastName",
-          )}
-          placeholder="Enter last name"
+          value={[patient.firstName, patient.lastName].filter(Boolean).join(" ")}
+          onChange={(event) => {
+            const fullName = event.target.value.trimStart();
+            const parts = fullName.split(/\s+/);
+            onChange("firstName", fullName ? parts[0] : "");
+            onChange("lastName", parts.length > 1 ? parts.slice(1).join(" ") : "");
+          }}
+          placeholder="Enter patient's full name"
         />
 
         <Field
           label="Mobile number"
           required
           value={patient.mobile}
-          onChange={handleChange(
-            "mobile",
-          )}
+          onChange={handleChange("mobile")}
           placeholder="10-digit mobile number"
           type="tel"
           maxLength={10}
@@ -83,47 +74,6 @@ export function PatientDetailsForm({
           placeholder="example@email.com"
           type="email"
         />
-
-        <Field
-          label="Date of birth"
-          required
-          value={patient.dateOfBirth}
-          onChange={handleChange(
-            "dateOfBirth",
-          )}
-          type="date"
-        />
-
-        <div>
-          <label className="text-sm font-semibold text-gray-700">
-            Gender
-            <span className="ml-1 text-red-500">
-              *
-            </span>
-          </label>
-
-          <select
-            value={patient.gender}
-            onChange={handleChange("gender")}
-            className="mt-2 h-11 w-full rounded-xl border border-gray-300 bg-white px-3 text-sm text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          >
-            <option value="">
-              Select gender
-            </option>
-
-            <option value="MALE">
-              Male
-            </option>
-
-            <option value="FEMALE">
-              Female
-            </option>
-
-            <option value="OTHER">
-              Other
-            </option>
-          </select>
-        </div>
       </div>
     </section>
   );

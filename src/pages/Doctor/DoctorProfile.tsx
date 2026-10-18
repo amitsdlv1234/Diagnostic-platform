@@ -10,6 +10,8 @@ import {
   Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getDoctorContent, DOCTOR_CONTENT_UPDATED_EVENT, type DoctorContent } from "../../features/admin/doctorConfig";
 
 import { Container } from "../../components/common/Container";
 
@@ -19,36 +21,6 @@ const NAVY = "#1b3a7a";
 const RED = "#c8102e";
 const GOLD = "#b8903c";
 const SERIF = `"Libre Baskerville", "Playfair Display", Georgia, serif`;
-
-const ADDRESS = "Rishi Tola, Kasabbara, near GIC, Ayodhya 224001";
-
-const expertise = [
-  "Fetal and obstetric ultrasound (NT scan, anomaly scan, growth scan)",
-  "Fetal Doppler and other Doppler studies",
-  "3D/4D imaging and follicular studies",
-  "Women's imaging",
-  "Paediatric and small parts ultrasound",
-  "Ultrasound-guided FNAC and biopsy",
-];
-
-const qualifications = [
-  "MBBS",
-  "MD (Radiodiagnosis)",
-  "CCFRG, Certificate Course in Fetal Radiology & Genetics (ICRI, IRIA), 2025",
-  "Fellowship in fetal ultrasound, Bangalore Fetal Medicine Centre (FGI)",
-];
-
-const training = [
-  "Scholarship awardee, American Society of Pediatric Neuroradiology (ASPNR), 2024-25",
-  "Observership in pediatric radiology, Bharati Vidyapeeth, Pune, 2024",
-];
-
-const memberships = [
-  "Life member, IRIA and ISPR (since 2021)",
-  "Member, European Society of Radiology (since 2023)",
-  "Member, Fetal Medicine Foundation, UK (FMF ID 302305)",
-  "Member, ISUOG",
-];
 
 function GoldRule() {
   return <div className="h-[3px] w-14" style={{ background: GOLD }} />;
@@ -71,6 +43,14 @@ function BulletList({ items }: { items: string[] }) {
 }
 
 export function DoctorProfile() {
+  const [doctor, setDoctor] = useState<DoctorContent>(() => getDoctorContent());
+  useEffect(() => {
+    const update = () => setDoctor(getDoctorContent());
+    window.addEventListener(DOCTOR_CONTENT_UPDATED_EVENT, update);
+    window.addEventListener("storage", update);
+    return () => { window.removeEventListener(DOCTOR_CONTENT_UPDATED_EVENT, update); window.removeEventListener("storage", update); };
+  }, []);
+  if (!doctor.enabled) return <main className="min-h-screen bg-gray-50"><Container><div className="py-24 text-center"><h1 className="text-2xl font-bold text-gray-900">Doctor profile is currently unavailable</h1><Link to="/" className="mt-5 inline-block font-semibold text-blue-700">Back to Home</Link></div></Container></main>;
   return (
     <main className="min-h-screen bg-gray-50">
       {/* TOP SECTION */}
@@ -87,8 +67,8 @@ export function DoctorProfile() {
           <div className="grid items-start gap-10 lg:grid-cols-[380px_1fr] lg:gap-16">
             <div className="mx-auto w-full max-w-sm lg:max-w-none">
               <img
-                src={doctorPhoto}
-                alt="Dr. Sarita Yadav, Consultant Radiologist"
+                src={doctor.imageUrl || doctorPhoto}
+                alt={`${doctor.name}, ${doctor.title}`}
                 className="aspect-[4/5] w-full rounded-2xl object-cover shadow-[0_20px_50px_-20px_rgba(27,58,122,0.35)]"
               />
             </div>
@@ -105,11 +85,11 @@ export function DoctorProfile() {
                 className="mt-3 text-4xl font-bold leading-tight sm:text-5xl"
                 style={{ fontFamily: SERIF, color: NAVY }}
               >
-                Dr. Sarita Yadav
+                {doctor.name}
               </h1>
 
               <p className="mt-4 text-base font-medium uppercase tracking-wide text-gray-700">
-                Consultant Radiologist
+                {doctor.title}
               </p>
 
               <div className="mt-5">
@@ -117,9 +97,7 @@ export function DoctorProfile() {
               </div>
 
               <p className="mt-8 max-w-2xl text-[17px] leading-8 text-gray-600">
-                Dr. Sarita Yadav is a fetal and women&rsquo;s imaging
-                specialist of Nidan Diagnostic Centre in
-                Ayodhya, which has served patients since 2000.
+                {doctor.profileBio}
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -134,7 +112,7 @@ export function DoctorProfile() {
                   <div>
                     <p className="text-sm text-gray-500">Specialisation</p>
                     <p className="mt-1 font-semibold text-gray-900">
-                      Fetal &amp; Women&rsquo;s Imaging
+                      {doctor.specialty}
                     </p>
                   </div>
                 </div>
@@ -150,7 +128,7 @@ export function DoctorProfile() {
                   <div>
                     <p className="text-sm text-gray-500">Qualifications</p>
                     <p className="mt-1 font-semibold text-gray-900">
-                      MBBS, MD (Radiodiagnosis), CCFRG
+                      {doctor.qualificationsSummary}
                     </p>
                   </div>
                 </div>
@@ -233,7 +211,7 @@ export function DoctorProfile() {
               </div>
 
               <div className="mt-6 space-y-4">
-                {expertise.map((item) => (
+                {doctor.expertise.map((item) => (
                   <div key={item} className="flex items-start gap-3">
                     <CheckCircle2
                       size={20}
@@ -280,7 +258,7 @@ export function DoctorProfile() {
                     Qualifications
                   </h3>
                 </div>
-                <BulletList items={qualifications} />
+                <BulletList items={doctor.qualifications} />
               </div>
 
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
@@ -290,7 +268,7 @@ export function DoctorProfile() {
                     Training &amp; Recognition
                   </h3>
                 </div>
-                <BulletList items={training} />
+                <BulletList items={doctor.training} />
               </div>
 
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
@@ -298,7 +276,7 @@ export function DoctorProfile() {
                   <Users size={22} style={{ color: NAVY }} />
                   <h3 className="font-semibold text-gray-900">Memberships</h3>
                 </div>
-                <BulletList items={memberships} />
+                <BulletList items={doctor.memberships} />
               </div>
             </div>
           </div>
@@ -316,7 +294,7 @@ export function DoctorProfile() {
 
               <p className="mt-3 flex items-start justify-center gap-2 text-blue-100 md:justify-start">
                 <MapPin size={18} className="mt-1 shrink-0" />
-                {ADDRESS}
+                {doctor.address}
               </p>
             </div>
 
@@ -331,11 +309,11 @@ export function DoctorProfile() {
               </Link>
 
               <a
-                href="tel:+917489446503"
+                href={`tel:${doctor.phone.replace(/\s/g, "")}`}
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border-2 border-white/70 px-7 py-3 font-semibold text-white transition hover:bg-white/10"
               >
                 <Phone size={18} />
-                7489446503
+                {doctor.phone}
               </a>
             </div>
           </div>

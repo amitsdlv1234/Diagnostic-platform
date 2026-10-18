@@ -1,4 +1,6 @@
 import { MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getDoctorContent, DOCTOR_CONTENT_UPDATED_EVENT, type DoctorContent } from "../../../features/admin/doctorConfig";
 import { Link } from "react-router-dom";
 
 import { Container } from "../../../components/common/Container";
@@ -10,26 +12,23 @@ const RED = "#c8102e";
 const GOLD = "#b8903c";
 const SERIF = `"Libre Baskerville", "Playfair Display", Georgia, serif`;
 
-const credentials = [
-  "CCFRG, Certificate Course in Fetal Radiology & Genetics (ICRI, IRIA), 2025",
-  "Fellowship in fetal ultrasound, Bangalore Fetal Medicine Centre (FGI)",
-  "Scholarship awardee, American Society of Pediatric Neuroradiology (ASPNR), 2024-25",
-  "Observership in pediatric radiology, Bharati Vidyapeeth, Pune, 2024",
-  "Life member, IRIA and ISPR (since 2021)",
-  "Member, European Society of Radiology (since 2023)",
-  "Member, Fetal Medicine Foundation, UK (FMF ID 302305)",
-  "Member, ISUOG",
-];
-
 export function DoctorSection() {
+  const [doctor, setDoctor] = useState<DoctorContent>(() => getDoctorContent());
+  useEffect(() => {
+    const update = () => setDoctor(getDoctorContent());
+    window.addEventListener(DOCTOR_CONTENT_UPDATED_EVENT, update);
+    window.addEventListener("storage", update);
+    return () => { window.removeEventListener(DOCTOR_CONTENT_UPDATED_EVENT, update); window.removeEventListener("storage", update); };
+  }, []);
+  if (!doctor.enabled) return null;
   return (
     <section className="bg-white py-12 sm:py-16">
       <Container>
         <div className="grid items-start gap-10 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
           <div className="mx-auto w-full max-w-md md:max-w-none">
             <img
-              src={doctorPhoto}
-              alt="Dr. Sarita Yadav, Consultant Radiologist"
+              src={doctor.imageUrl || doctorPhoto}
+              alt={`${doctor.name}, ${doctor.title}`}
               className="aspect-[4/5] w-full rounded-2xl object-cover shadow-[0_20px_50px_-20px_rgba(27,58,122,0.35)] md:aspect-auto md:h-[600px]"
             />
           </div>
@@ -46,26 +45,22 @@ export function DoctorSection() {
               className="mt-3 text-4xl font-bold leading-tight sm:text-5xl"
               style={{ fontFamily: SERIF, color: NAVY }}
             >
-              Dr. Sarita Yadav
+              {doctor.name}
             </h2>
 
             <p className="mt-4 text-base font-medium uppercase tracking-wide text-gray-700">
-              Consultant Radiologist
+              {doctor.title}
             </p>
 
             <p className="mt-1 text-sm text-gray-600">
-              MBBS, MD (Radiodiagnosis), CCFRG &middot; Fetal &amp; Women&rsquo;s
-              Imaging Specialist
+              {doctor.qualificationsSummary} &middot; {doctor.specialty}
             </p>
 
             <div className="mt-5 h-[3px] w-14" style={{ background: GOLD }} />
 
             <div className="mt-8 space-y-5 text-[17px] leading-8 text-gray-600">
               <p>
-                Nidan Diagnostic Centre has served Ayodhya since 2000 and is
-                Dr. Sarita Yadav&rsquo;s own centre. Obstetric and fetal
-                imaging, Doppler studies, digital X-ray and a full pathology
-                laboratory sit under one roof.
+                {doctor.shortBio}
               </p>
             </div>
 
@@ -76,7 +71,7 @@ export function DoctorSection() {
             <div className="mt-3 h-[3px] w-14" style={{ background: GOLD }} />
 
             <ul className="mt-6 space-y-3 text-[16px] leading-7 text-gray-600">
-              {credentials.map((item) => (
+              {[...doctor.training, ...doctor.memberships].map((item) => (
                 <li key={item} className="flex gap-3">
                   <span
                     className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full"
@@ -93,7 +88,7 @@ export function DoctorSection() {
                 className="mt-1 shrink-0"
                 style={{ color: RED }}
               />
-              Rishi Tola, Kasabbara, near GIC, Ayodhya 224001
+              {doctor.address}
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">

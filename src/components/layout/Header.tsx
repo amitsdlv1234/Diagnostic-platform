@@ -9,6 +9,8 @@ import {
   User,
   X,
   Phone,
+  ChevronDown,
+  ShieldCheck,
 } from "lucide-react";
 
 import { Link } from "react-router-dom";
@@ -31,6 +33,7 @@ import nidanLogo from "../../assets/nidan-logo.jpeg";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loginMenuOpen, setLoginMenuOpen] = useState(false);
 
   const [contactSettings, setContactSettings] = useState(getContactSettings());
 
@@ -234,12 +237,48 @@ export function Header() {
                 </button>
               </div>
             ) : (
-              <Link to="/auth/login" className="hidden sm:block">
-                <Button size="sm">
+              <div className="relative hidden sm:block">
+                <Button
+                  size="sm"
+                  onClick={() => setLoginMenuOpen((open) => !open)}
+                  aria-expanded={loginMenuOpen}
+                  aria-haspopup="menu"
+                >
                   <User size={16} className="mr-1.5" />
                   Login
+                  <ChevronDown size={15} className="ml-1" />
                 </Button>
-              </Link>
+                {loginMenuOpen && (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Close login menu"
+                      className="fixed inset-0 z-40 cursor-default"
+                      onClick={() => setLoginMenuOpen(false)}
+                    />
+                    <div role="menu" className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-gray-200 bg-white p-2 shadow-xl">
+                      <Link
+                        role="menuitem"
+                        to="/auth/login"
+                        onClick={() => setLoginMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-blue-50 hover:text-blue-700"
+                      >
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-700"><User size={18} /></span>
+                        <span><span className="block">Patient Login</span><span className="mt-0.5 block text-xs font-normal text-gray-500">Bookings and diagnostic reports</span></span>
+                      </Link>
+                      <Link
+                        role="menuitem"
+                        to="/admin/login"
+                        onClick={() => setLoginMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-gray-800 transition hover:bg-pink-50 hover:text-pink-700"
+                      >
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-pink-100 text-pink-700"><ShieldCheck size={18} /></span>
+                        <span><span className="block">Admin Login</span><span className="mt-0.5 block text-xs font-normal text-gray-500">Manage centre and patient reports</span></span>
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </div>
             )}
 
             {/* MOBILE MENU TOGGLE */}
@@ -369,14 +408,23 @@ export function Header() {
                   </button>
                 </>
               ) : (
-                <Link
-                  to="/auth/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-3 text-sm font-semibold text-white"
-                >
-                  <User size={17} />
-                  Login
-                </Link>
+                <div className="mt-2 space-y-2 border-t border-gray-100 pt-3">
+                  <p className="px-3 text-xs font-bold uppercase tracking-wider text-gray-400">Login as</p>
+                  <Link
+                    to="/auth/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-xl bg-blue-50 px-3 py-3 text-sm font-semibold text-blue-700"
+                  >
+                    <User size={18} /> Patient Login
+                  </Link>
+                  <Link
+                    to="/admin/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-xl bg-pink-50 px-3 py-3 text-sm font-semibold text-pink-700"
+                  >
+                    <ShieldCheck size={18} /> Admin Login
+                  </Link>
+                </div>
               )}
             </nav>
           </div>

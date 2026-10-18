@@ -7,9 +7,12 @@ import {
   Package,
   Phone,
   Stethoscope,
+  UserRound,
   FileText,
   Palette,
   BellRing,
+  Video,
+  ClipboardCheck,
 } from "lucide-react";
 
 import {
@@ -43,6 +46,11 @@ const links = [
     icon: Building2,
   },
   {
+    to: "/admin/doctors",
+    label: "Doctor Section",
+    icon: UserRound,
+  },
+  {
     to: "/admin/home",
     label: "Home Page",
     icon: Home,
@@ -53,9 +61,19 @@ const links = [
     icon: FileText,
   },
   {
+    to: "/admin/videos",
+    label: "Video Section",
+    icon: Video,
+  },
+  {
     to: "/admin/offers",
     label: "Offers & Banners",
     icon: Gift,
+  },
+  {
+    to: "/admin/reports",
+    label: "Patient Reports",
+    icon: ClipboardCheck,
   },
   {
     to: "/admin/bookings",

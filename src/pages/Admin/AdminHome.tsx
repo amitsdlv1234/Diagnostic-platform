@@ -707,6 +707,19 @@ export function AdminHome() {
         </p>
       </div>
 
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <HomeManagementCard title="Hero slider" description={`${content.heroSlides.length} slides configured`} detail="Manage homepage banners and ordering" />
+        <HomeManagementCard title="Popular tests" description={`${popularTests.testIds.length} tests selected`} detail="Choose which tests appear first" />
+        <HomeManagementCard title="Packages" description={`${packagesContent.packageIds.length} packages configured`} detail="Review featured package content" />
+        <HomeManagementCard title="Homepage content" description="Sections and text" detail="Edit content below, then save changes" />
+      </section>
+
+      <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4 sm:p-5">
+        <h2 className="font-bold text-blue-950">Quick guide</h2>
+        <p className="mt-1 text-sm leading-6 text-blue-900/80">Use the sections below to update the homepage. Preview image changes before saving, use the move arrows to reorder slides, and look for the save confirmation after each section is updated.</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-blue-900"><span className="rounded-full bg-white px-3 py-1.5">1. Edit content</span><span className="rounded-full bg-white px-3 py-1.5">2. Review order and visibility</span><span className="rounded-full bg-white px-3 py-1.5">3. Save changes</span></div>
+      </div>
+
       {/* =====================================================
           HERO SLIDER MANAGEMENT
           ===================================================== */}
@@ -1823,4 +1836,8 @@ function Field({
       )}
     </div>
   );
+}
+
+function HomeManagementCard({ title, description, detail }: { title: string; description: string; detail: string }) {
+  return <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"><p className="text-sm font-semibold text-gray-500">{title}</p><p className="mt-2 text-lg font-bold text-gray-950">{description}</p><p className="mt-1 text-xs leading-5 text-gray-500">{detail}</p></div>;
 }
